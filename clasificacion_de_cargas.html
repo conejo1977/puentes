@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clasificación de Cargas AASHTO LRFD para Puentes</title>
+
+<!-- ============ MATHJAX ============ -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            tags: 'none'
+        },
+        svg: { fontCache: 'global', scale: 1.05 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --navy-900: #0a1628;
+        --navy-800: #0f1f38;
+        --teal-500: #14b8a6;
+        --teal-400: #2dd4bf;
+        --teal-300: #5eead4;
+        --cyan-500: #06b6d4;
+        --amber-500: #f59e0b;
+        --amber-400: #fbbf24;
+        --coral-500: #f43f5e;
+        --coral-400: #fb7185;
+        --blue-500: #3b82f6;
+        --blue-400: #60a5fa;
+        --purple-500: #8b5cf6;
+        --purple-400: #a78bfa;
+        --white: #ffffff;
+        --gray-400: #94a3b8;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: var(--navy-900);
+        color: var(--white);
+        line-height: 1.55;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .infographic {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 2rem 3rem;
+        position: relative;
+    }
+
+    /* ========== FONDO DECORATIVO ========== */
+    .bg-scene {
+        position: fixed; inset: 0;
+        pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .bg-scene .circle { position: absolute; border-radius: 50%; filter: blur(1px); }
+    .bg-scene .c1 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(20,184,166,0.20), transparent 70%); top: -190px; right: -150px; }
+    .bg-scene .c2 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%); top: 400px; right: -120px; }
+    .bg-scene .c3 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%); top: 1100px; left: -160px; }
+    .bg-scene .c4 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(244,63,94,0.10), transparent 70%); top: 1900px; right: -100px; }
+    .bg-scene .c5 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(20,184,166,0.12), transparent 70%); bottom: 300px; left: -140px; }
+
+    .bg-grid {
+        position: fixed; inset: 0;
+        background-image:
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none; z-index: 0;
+    }
+
+    /* ========== HERO ========== */
+    .hero { position: relative; padding: 4rem 0 2rem; z-index: 2; }
+
+    .hero-badge {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: rgba(20,184,166,0.12);
+        border: 1px solid rgba(20,184,166,0.3);
+        color: var(--teal-300);
+        padding: 0.4rem 1rem; border-radius: 40px;
+        font-size: 0.75rem; letter-spacing: 0.15em;
+        text-transform: uppercase; font-weight: 700;
+        margin-bottom: 1.2rem;
+    }
+    .hero-badge .pulse-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--teal-400);
+        box-shadow: 0 0 0 4px rgba(45,212,191,0.2);
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 4px rgba(45,212,191,0.2); }
+        50% { box-shadow: 0 0 0 8px rgba(45,212,191,0.05); }
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        font-weight: 800; letter-spacing: -0.03em;
+        line-height: 1.05; margin-bottom: 1rem;
+    }
+    .hero h1 .accent {
+        background: linear-gradient(135deg, var(--teal-400) 0%, var(--cyan-500) 50%, var(--blue-400) 100%);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+        font-size: clamp(0.98rem, 1.6vw, 1.15rem);
+        color: #b8cce0; max-width: 700px; margin-bottom: 1.5rem;
+    }
+    .hero p strong { color: var(--teal-400); font-weight: 600; }
+
+    /* ========== CLASIFICACIÓN VISUAL ========== */
+    .classification-visual {
+        position: relative; z-index: 2;
+        margin: 1.5rem 0 3rem;
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 1.2rem;
+    }
+    @media (max-width: 800px) { .classification-visual { grid-template-columns: 1fr; } }
+
+    .class-card {
+        position: relative; border-radius: 20px;
+        padding: 1.8rem 1.6rem 2rem;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.08);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    }
+    .class-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .class-card[data-color="blue"]   { --accent: var(--blue-400);  --accent-glow: rgba(59,130,246,0.25); }
+    .class-card[data-color="teal"]   { --accent: var(--teal-400);  --accent-glow: rgba(45,212,191,0.25); }
+    .class-card[data-color="coral"]  { --accent: var(--coral-400); --accent-glow: rgba(251,113,133,0.25); }
+
+    .class-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0;
+        height: 4px; background: var(--accent);
+    }
+    .class-card::after {
+        content: ''; position: absolute; top: -40px; right: -40px;
+        width: 140px; height: 140px; border-radius: 50%;
+        background: var(--accent-glow); opacity: 0.5;
+        transition: opacity 0.3s;
+    }
+    .class-card:hover::after { opacity: 0.8; }
+
+    .class-icon {
+        width: 52px; height: 52px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 1.1rem;
+        background: var(--accent-glow); color: var(--accent);
+        position: relative; z-index: 1;
+    }
+    .class-icon svg { width: 28px; height: 28px; }
+
+    .class-card h2 {
+        font-size: 1.2rem; font-weight: 700; color: var(--white);
+        margin-bottom: 0.5rem; position: relative; z-index: 1;
+    }
+    .class-card p {
+        font-size: 0.85rem; color: #a9bdd3; line-height: 1.6;
+        position: relative; z-index: 1; margin-bottom: 1rem;
+    }
+
+    .class-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; position: relative; z-index: 1; }
+    .class-tag {
+        display: inline-block; padding: 0.25rem 0.7rem;
+        border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+        letter-spacing: 0.04em;
+        background: var(--accent-glow); color: var(--accent);
+        border: 1px solid var(--accent);
+    }
+
+    /* ========== SECTION ========== */
+    .section { position: relative; z-index: 2; margin-bottom: 3.5rem; }
+
+    .section-header {
+        display: flex; align-items: center; gap: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+    .section-num {
+        width: 38px; height: 38px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--teal-500), var(--cyan-500));
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.95rem;
+        color: var(--navy-900); flex-shrink: 0;
+    }
+    .section-title {
+        font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+        font-weight: 700; color: var(--white);
+    }
+    .section-subtitle {
+        font-size: 0.9rem; color: var(--gray-400);
+        margin-bottom: 1.8rem; max-width: 850px;
+        padding-left: 50px; line-height: 1.65;
+    }
+    @media (max-width: 600px) { .section-subtitle { padding-left: 0; } }
+
+    /* ========== TABLA DE CARGAS ========== */
+    .load-table-wrapper {
+        overflow-x: auto; border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 1.5rem;
+    }
+    .load-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 0.88rem;
+        background: rgba(255,255,255,0.02);
+    }
+    .load-table th {
+        background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(6,182,212,0.10));
+        color: var(--teal-300); font-weight: 700;
+        padding: 1rem 1.2rem; text-align: left;
+        font-size: 0.78rem; letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .load-table td {
+        padding: 0.85rem 1.2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        vertical-align: top; color: #b8cce0;
+    }
+    .load-table tr:last-child td { border-bottom: none; }
+    .load-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+    .load-table .symbol {
+        font-family: 'Cambria Math', 'Times New Roman', serif;
+        font-weight: 700; font-size: 0.95rem;
+        color: var(--teal-400); white-space: nowrap;
+    }
+    .load-table .load-name { color: var(--white); font-weight: 600; }
+    .load-table .load-desc { font-size: 0.82rem; color: #93a9c2; }
+
+    /* ========== CARDS DE CARGAS DESTACADAS ========== */
+    .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem; margin-top: 1.5rem;
+    }
+    .featured-card {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px; padding: 1.4rem 1.4rem 1.5rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .featured-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .featured-card[data-color="blue"]   { --accent: var(--blue-400);  --accent-glow: rgba(59,130,246,0.2); }
+    .featured-card[data-color="teal"]   { --accent: var(--teal-400);  --accent-glow: rgba(45,212,191,0.2); }
+    .featured-card[data-color="amber"]  { --accent: var(--amber-400); --accent-glow: rgba(251,191,36,0.2); }
+    .featured-card[data-color="coral"]  { --accent: var(--coral-400); --accent-glow: rgba(251,113,133,0.2); }
+    .featured-card[data-color="purple"] { --accent: var(--purple-400); --accent-glow: rgba(167,139,250,0.2); }
+
+    .featured-card .fc-symbol {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 44px; height: 44px; padding: 0 0.8rem;
+        border-radius: 12px;
+        background: var(--accent-glow);
+        border: 1.5px solid var(--accent);
+        color: var(--accent);
+        font-family: 'Cambria Math', serif;
+        font-weight: 800; font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+    }
+    .featured-card h4 { font-size: 0.98rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .featured-card p { font-size: 0.82rem; color: #a9bdd3; line-height: 1.6; }
+
+    /* ========== ECUACIÓN ========== */
+    .formula-hero {
+        position: relative; z-index: 2;
+        margin: 0 0 3.5rem;
+        background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(59,130,246,0.10));
+        border: 1px solid rgba(20,184,166,0.3);
+        border-radius: 20px;
+        padding: 2.2rem 2rem; text-align: center; overflow: hidden;
+    }
+    .formula-hero::before {
+        content: ''; position: absolute; inset: 0;
+        background:
+            radial-gradient(circle at 20% 50%, rgba(20,184,166,0.15), transparent 50%),
+            radial-gradient(circle at 80% 50%, rgba(59,130,246,0.12), transparent 50%);
+    }
+    .formula-label {
+        position: relative;
+        font-size: 0.72rem; font-weight: 700;
+        letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--teal-400); margin-bottom: 1.2rem;
+    }
+    .formula-eq {
+        position: relative;
+        font-size: clamp(1.3rem, 3vw, 1.9rem);
+        color: var(--white); margin-bottom: 1.4rem;
+        overflow-x: auto; overflow-y: hidden; padding: 0.5rem 0;
+    }
+    .formula-legend {
+        position: relative;
+        display: flex; justify-content: center;
+        flex-wrap: wrap; gap: 1.4rem;
+        font-size: 0.78rem; color: #b8cce0;
+    }
+    .formula-legend span { display: flex; align-items: center; gap: 0.4rem; }
+    .formula-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    mjx-container[jax="SVG"][display="false"] { color: var(--teal-300); font-size: 1em; }
+
+    /* ========== EJERCICIO ========== */
+    .exercise-container {
+        position: relative; z-index: 2;
+        background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(20,184,166,0.05));
+        border: 1px solid rgba(139,92,246,0.25);
+        border-radius: 24px;
+        padding: 2.5rem 2.2rem;
+        margin-bottom: 2rem;
+    }
+    .exercise-header {
+        display: flex; align-items: center; gap: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+    .exercise-badge {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: rgba(139,92,246,0.15);
+        border: 1px solid rgba(167,139,250,0.4);
+        color: var(--purple-400);
+        padding: 0.4rem 1rem; border-radius: 40px;
+        font-size: 0.72rem; font-weight: 700;
+        letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .exercise-title {
+        font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+        font-weight: 800; color: var(--white);
+        margin-bottom: 1rem;
+    }
+    .exercise-title .accent {
+        background: linear-gradient(135deg, var(--purple-400), var(--teal-400));
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .exercise-description {
+        font-size: 0.95rem; color: #b8cce0;
+        line-height: 1.7; margin-bottom: 2rem;
+        max-width: 900px;
+    }
+
+    /* Diagrama del puente */
+    .bridge-diagram {
+        background: rgba(0,0,0,0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .bridge-diagram svg { width: 100%; height: auto; display: block; }
+
+    /* Data del ejercicio */
+    .data-block {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+    }
+    .data-item {
+        display: flex; justify-content: space-between;
+        align-items: center;
+        background: rgba(255,255,255,0.03);
+        border-left: 3px solid var(--teal-400);
+        padding: 0.65rem 1rem;
+        border-radius: 0 8px 8px 0;
+        font-size: 0.88rem;
+    }
+    .data-item .data-label { color: #b8cce0; }
+    .data-item .data-value {
+        color: var(--white);
+        font-weight: 700;
+        font-family: 'Cambria Math', serif;
+    }
+    .data-item .data-unit {
+        color: var(--teal-400);
+        font-size: 0.78rem;
+        margin-left: 0.3rem;
+    }
+
+    /* Pasos del ejercicio */
+    .step-block {
+        background: rgba(255,255,255,0.03);
+        border-radius: 14px;
+        padding: 1.5rem 1.6rem;
+        margin-bottom: 1.2rem;
+        border-left: 4px solid var(--teal-400);
+        transition: background 0.2s ease;
+    }
+    .step-block:hover { background: rgba(255,255,255,0.05); }
+
+    .step-block[data-color="blue"]   { border-left-color: var(--blue-400); }
+    .step-block[data-color="teal"]   { border-left-color: var(--teal-400); }
+    .step-block[data-color="amber"]  { border-left-color: var(--amber-400); }
+    .step-block[data-color="coral"]  { border-left-color: var(--coral-400); }
+    .step-block[data-color="purple"] { border-left-color: var(--purple-400); }
+
+    .step-header {
+        display: flex; align-items: center; gap: 0.7rem;
+        margin-bottom: 1rem;
+    }
+    .step-num {
+        width: 30px; height: 30px; border-radius: 8px;
+        background: rgba(255,255,255,0.08);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.85rem;
+        color: var(--teal-300);
+        flex-shrink: 0;
+    }
+    .step-block[data-color="blue"]   .step-num { color: var(--blue-400); background: rgba(59,130,246,0.12); }
+    .step-block[data-color="teal"]   .step-num { color: var(--teal-400); background: rgba(45,212,191,0.12); }
+    .step-block[data-color="amber"]  .step-num { color: var(--amber-400); background: rgba(251,191,36,0.12); }
+    .step-block[data-color="coral"]  .step-num { color: var(--coral-400); background: rgba(251,113,133,0.12); }
+    .step-block[data-color="purple"] .step-num { color: var(--purple-400); background: rgba(167,139,250,0.12); }
+
+    .step-title {
+        font-size: 1rem; font-weight: 700;
+        color: var(--white);
+    }
+    .step-content {
+        font-size: 0.88rem;
+        color: #b8cce0;
+        line-height: 1.7;
+    }
+    .step-content p { margin-bottom: 0.7rem; }
+    .step-content p:last-child { margin-bottom: 0; }
+
+    .calc-line {
+        background: rgba(0,0,0,0.25);
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        margin: 0.6rem 0;
+        font-size: 0.9rem;
+        color: var(--teal-300);
+        overflow-x: auto;
+        border-left: 2px solid var(--teal-500);
+    }
+
+    .result-line {
+        background: linear-gradient(90deg, rgba(20,184,166,0.15), rgba(20,184,166,0.05));
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        margin: 0.6rem 0;
+        font-size: 0.95rem;
+        color: var(--white);
+        font-weight: 700;
+        border-left: 3px solid var(--teal-400);
+    }
+    .result-line .result-value {
+        color: var(--teal-300);
+        font-family: 'Cambria Math', serif;
+        font-size: 1.05rem;
+    }
+
+    /* Resumen final del ejercicio */
+    .summary-table-wrap {
+        overflow-x: auto;
+        border-radius: 14px;
+        border: 1px solid rgba(20,184,166,0.25);
+        margin-top: 1.5rem;
+    }
+    .summary-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 0.88rem;
+        background: rgba(20,184,166,0.04);
+    }
+    .summary-table th {
+        background: linear-gradient(135deg, rgba(20,184,166,0.25), rgba(6,182,212,0.15));
+        color: var(--white); font-weight: 700;
+        padding: 0.9rem 1.1rem; text-align: left;
+        font-size: 0.78rem; letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .summary-table td {
+        padding: 0.8rem 1.1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        color: #b8cce0;
+    }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table tr:hover td { background: rgba(255,255,255,0.03); }
+    .summary-table .val {
+        color: var(--teal-300);
+        font-weight: 700;
+        font-family: 'Cambria Math', serif;
+        text-align: right;
+    }
+    .summary-table .unit {
+        color: var(--gray-400);
+        font-size: 0.78rem;
+        text-align: right;
+    }
+    .summary-table .row-group td {
+        background: rgba(20,184,166,0.08);
+        color: var(--teal-300);
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+        position: relative; z-index: 2;
+        text-align: center; padding: 2rem 0 1rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: var(--gray-400); font-size: 0.8rem;
+    }
+    .footer strong { color: var(--teal-400); }
+    .footer .brand {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        margin-bottom: 0.6rem; padding: 0.4rem 1rem;
+        background: rgba(255,255,255,0.04);
+        border-radius: 40px;
+        border: 1px solid rgba(255,255,255,0.08);
+        font-size: 0.72rem; letter-spacing: 0.15em;
+        text-transform: uppercase; color: var(--gray-400);
+        font-weight: 600;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 700px) {
+        .infographic { padding: 0 1.2rem 2rem; }
+        .hero { padding: 2.5rem 0 1rem; }
+        .section { margin-bottom: 2.5rem; }
+        .formula-hero { padding: 1.5rem 1.2rem; }
+        .classification-visual { grid-template-columns: 1fr; }
+        .exercise-container { padding: 1.5rem 1.2rem; }
+    }
+</style>
+</head>
+<body>
+
+<!-- FONDO DECORATIVO -->
+<div class="bg-scene">
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+    <div class="circle c4"></div>
+    <div class="circle c5"></div>
+</div>
+<div class="bg-grid"></div>
+
+<div class="infographic">
+
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+        <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            AASHTO LRFD · Manual MTC 2018
+        </div>
+        <h1>Clasificación de <span class="accent">Cargas</span> para Puentes</h1>
+        <p>Las cargas se clasifican en <strong>permanentes, variables y excepcionales</strong> según su naturaleza y variabilidad durante la vida útil del puente. Esta clasificación es fundamental para aplicar correctamente los factores de carga y las combinaciones según el formato LRFD.</p>
+    </header>
+
+    <!-- ================= CLASIFICACIÓN VISUAL ================= -->
+    <div class="classification-visual">
+        <div class="class-card" data-color="blue">
+            <div class="class-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+            </div>
+            <h2>Cargas Permanentes</h2>
+            <p>Actúan durante toda la vida útil de la estructura sin variar significativamente, o que varían en un solo sentido hasta alcanzar un valor límite.</p>
+            <div class="class-tags">
+                <span class="class-tag">DC</span>
+                <span class="class-tag">DW</span>
+                <span class="class-tag">EH</span>
+                <span class="class-tag">EV</span>
+                <span class="class-tag">ES</span>
+                <span class="class-tag">DD</span>
+                <span class="class-tag">CR</span>
+                <span class="class-tag">SH</span>
+                <span class="class-tag">PS</span>
+            </div>
+        </div>
+
+        <div class="class-card" data-color="teal">
+            <div class="class-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+            </div>
+            <h2>Cargas Variables</h2>
+            <p>Presentan variaciones frecuentes y significativas en términos relativos a su valor medio. Incluyen los pesos de vehículos y personas, efectos dinámicos, fuerzas de frenado, viento, temperatura y sismo.</p>
+            <div class="class-tags">
+                <span class="class-tag">LL</span>
+                <span class="class-tag">IM</span>
+                <span class="class-tag">CE</span>
+                <span class="class-tag">BR</span>
+                <span class="class-tag">WA</span>
+                <span class="class-tag">WS</span>
+                <span class="class-tag">WL</span>
+                <span class="class-tag">TU</span>
+                <span class="class-tag">TG</span>
+                <span class="class-tag">EQ</span>
+                <span class="class-tag">FR</span>
+                <span class="class-tag">PL</span>
+            </div>
+        </div>
+
+        <div class="class-card" data-color="coral">
+            <div class="class-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h2>Cargas Excepcionales</h2>
+            <p>Acciones cuya probabilidad de ocurrencia es muy baja, pero que en determinadas condiciones deben ser consideradas por el proyectista, como colisiones, explosiones o incendios.</p>
+            <div class="class-tags">
+                <span class="class-tag">CT</span>
+                <span class="class-tag">CV</span>
+                <span class="class-tag">BL</span>
+                <span class="class-tag">IC</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ECUACIÓN ================= -->
+    <div class="formula-hero">
+        <div class="formula-label">Ecuación Fundamental del Diseño LRFD</div>
+        <div class="formula-eq">
+            $$ \sum_i \eta_i \gamma_i Q_i \;\leq\; \phi\, R_n \;=\; R_r $$
+        </div>
+        <div class="formula-legend">
+            <span><span class="dot" style="background:#60a5fa;"></span> $\gamma_i$ = Factor de carga</span>
+            <span><span class="dot" style="background:#fbbf24;"></span> $\phi$ = Factor de resistencia</span>
+            <span><span class="dot" style="background:#2dd4bf;"></span> $\eta_i$ = Modificador de carga</span>
+            <span><span class="dot" style="background:#f43f5e;"></span> $Q_i$ = Solicitación · $R_n$ = Resistencia nominal</span>
+        </div>
+    </div>
+
+    <!-- ================= CARGAS PERMANENTES ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">01</div>
+            <h2 class="section-title">Cargas Permanentes</h2>
+        </div>
+        <p class="section-subtitle">Son aquellas que actúan durante toda la vida útil de la estructura sin variar significativamente, o que varían en un solo sentido hasta alcanzar un valor límite.</p>
+
+        <div class="load-table-wrapper">
+            <table class="load-table">
+                <thead>
+                    <tr>
+                        <th>Símbolo</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="symbol">DC</td><td class="load-name">Peso propio</td><td class="load-desc">Carga muerta de componentes estructurales y accesorios no estructurales.</td></tr>
+                    <tr><td class="symbol">DW</td><td class="load-name">Superficie de rodamiento</td><td class="load-desc">Peso propio de superficies de rodamiento e instalaciones para servicios públicos.</td></tr>
+                    <tr><td class="symbol">EH</td><td class="load-name">Empuje horizontal del suelo</td><td class="load-desc">Presión lateral ejercida por el terreno sobre la estructura.</td></tr>
+                    <tr><td class="symbol">EV</td><td class="load-name">Presión vertical del relleno</td><td class="load-desc">Presión vertical por carga muerta de rellenos de tierra.</td></tr>
+                    <tr><td class="symbol">ES</td><td class="load-name">Sobrecarga del suelo</td><td class="load-desc">Sobrecarga en el terreno que genera presión adicional.</td></tr>
+                    <tr><td class="symbol">DD</td><td class="load-name">Fricción negativa (Downdrag)</td><td class="load-desc">Arrastre por asentamientos en pilotes.</td></tr>
+                    <tr><td class="symbol">CR</td><td class="load-name">Fluencia lenta (Creep)</td><td class="load-desc">Solicitaciones de fuerza debido a la fluencia lenta del concreto.</td></tr>
+                    <tr><td class="symbol">SH</td><td class="load-name">Contracción de fragua</td><td class="load-desc">Solicitaciones debido a las contracciones diferenciales del concreto.</td></tr>
+                    <tr><td class="symbol">PS</td><td class="load-name">Efecto secundario del postensado</td><td class="load-desc">Fuerzas secundarias de elementos postensados.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ================= CARGAS VARIABLES ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">02</div>
+            <h2 class="section-title">Cargas Variables</h2>
+        </div>
+        <p class="section-subtitle">Son aquellas para las que se observan variaciones frecuentes y significativas. Incluyen los pesos de los vehículos y personas, así como los correspondientes efectos dinámicos, fuerzas de frenado, fuerzas centrífugas, empuje de agua, efectos de temperatura, acciones de sismo y acciones de viento.</p>
+
+        <div class="load-table-wrapper">
+            <table class="load-table">
+                <thead>
+                    <tr><th>Símbolo</th><th>Nombre</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="symbol">LL</td><td class="load-name">Sobrecarga vehicular</td><td class="load-desc">Carga viva vehicular (camión, tándem o carga distribuida HL-93).</td></tr>
+                    <tr><td class="symbol">IM</td><td class="load-name">Incremento por carga dinámica</td><td class="load-desc">Efecto dinámico de la carga viva vehicular.</td></tr>
+                    <tr><td class="symbol">PL</td><td class="load-name">Sobrecarga peatonal</td><td class="load-desc">Carga viva de peatones sobre veredas o puentes peatonales.</td></tr>
+                    <tr><td class="symbol">CE</td><td class="load-name">Fuerza centrífuga vehicular</td><td class="load-desc">Fuerza radial generada por vehículos en curva.</td></tr>
+                    <tr><td class="symbol">BR</td><td class="load-name">Fuerza de frenado vehicular</td><td class="load-desc">Fuerza longitudinal por frenado de vehículos.</td></tr>
+                    <tr><td class="symbol">WA</td><td class="load-name">Carga hidráulica</td><td class="load-desc">Empuje de agua y presión de flujo.</td></tr>
+                    <tr><td class="symbol">WS</td><td class="load-name">Viento sobre la estructura</td><td class="load-desc">Presión horizontal del viento sobre la estructura.</td></tr>
+                    <tr><td class="symbol">WL</td><td class="load-name">Viento sobre la carga viva</td><td class="load-desc">Presión del viento sobre los vehículos presentes.</td></tr>
+                    <tr><td class="symbol">TU</td><td class="load-name">Temperatura uniforme</td><td class="load-desc">Efecto de carga debido a deformación térmica.</td></tr>
+                    <tr><td class="symbol">TG</td><td class="load-name">Gradiente de temperatura</td><td class="load-desc">Efecto de carga debido a gradiente de temperatura.</td></tr>
+                    <tr><td class="symbol">EQ</td><td class="load-name">Sismo</td><td class="load-desc">Efectos sísmicos.</td></tr>
+                    <tr><td class="symbol">FR</td><td class="load-name">Fricción</td><td class="load-desc">Fuerzas friccionales en apoyos.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ================= CARGAS EXCEPCIONALES ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">03</div>
+            <h2 class="section-title">Cargas Excepcionales</h2>
+        </div>
+        <p class="section-subtitle">Son aquellas acciones cuya probabilidad de ocurrencia es muy baja, pero que en determinadas condiciones deben ser consideradas por el proyectista.</p>
+
+        <div class="load-table-wrapper">
+            <table class="load-table">
+                <thead>
+                    <tr><th>Símbolo</th><th>Nombre</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="symbol">CT</td><td class="load-name">Fuerza de colisión vehicular</td><td class="load-desc">Fuerza de impacto de un vehículo contra la estructura.</td></tr>
+                    <tr><td class="symbol">CV</td><td class="load-name">Fuerza de colisión de embarcación</td><td class="load-desc">Fuerza de impacto de una embarcación contra la estructura.</td></tr>
+                    <tr><td class="symbol">BL</td><td class="load-name">Carga de explosión</td><td class="load-desc">Fuerza de explosión intencional o no intencional.</td></tr>
+                    <tr><td class="symbol">IC</td><td class="load-name">Carga de hielo</td><td class="load-desc">Presión ejercida por el hielo sobre la estructura.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ================= CARGAS DESTACADAS ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">04</div>
+            <h2 class="section-title">Cargas Clave en el Diseño</h2>
+        </div>
+        <p class="section-subtitle">Estas son las cargas más utilizadas en el diseño de puentes según el Manual de Puentes MTC 2018 y la normativa AASHTO LRFD.</p>
+
+        <div class="featured-grid">
+            <div class="featured-card" data-color="blue">
+                <div class="fc-symbol">DC</div>
+                <h4>Peso Propio</h4>
+                <p>Peso propio de los componentes estructurales y no estructurales. Se emplea un peso específico del concreto armado de 2500 kg/m³ para fines de cálculo.</p>
+            </div>
+            <div class="featured-card" data-color="teal">
+                <div class="fc-symbol">DW</div>
+                <h4>Superficie de Rodadura</h4>
+                <p>Peso propio de las superficies de rodamiento e instalaciones para servicios públicos.</p>
+            </div>
+            <div class="featured-card" data-color="amber">
+                <div class="fc-symbol">LL + IM</div>
+                <h4>Carga Viva Vehicular</h4>
+                <p>Incluye la carga viva vehicular (camión, tándem o carga distribuida) más el incremento por efectos dinámicos. Se utiliza la carga HL-93.</p>
+            </div>
+            <div class="featured-card" data-color="coral">
+                <div class="fc-symbol">PL</div>
+                <h4>Sobrecarga Peatonal</h4>
+                <p>Carga viva de peatones sobre veredas o puentes peatonales. Es fundamental para el diseño de puentes peatonales.</p>
+            </div>
+            <div class="featured-card" data-color="purple">
+                <div class="fc-symbol">EQ</div>
+                <h4>Efectos Sísmicos</h4>
+                <p>Carga sísmica que debe considerarse en el diseño de estructuras ubicadas en zonas de peligro sísmico según el Apéndice A3 del Manual.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 05 · EJERCICIO PRÁCTICO ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">05</div>
+            <h2 class="section-title">Ejercicio Práctico Resuelto</h2>
+        </div>
+        <p class="section-subtitle">Aplicación de la clasificación de cargas permanentes (DC y DW) al cálculo de una viga interior de un puente simplemente apoyado.</p>
+
+        <div class="exercise-container">
+            <div class="exercise-header">
+                <span class="exercise-badge">📝 Ejercicio Resuelto</span>
+            </div>
+            <h3 class="exercise-title">Cargas en una <span class="accent">viga interior de un puente</span></h3>
+            <p class="exercise-description">
+                Determinar la carga permanente total sobre una viga interior de un puente simplemente apoyado, así como las reacciones en los apoyos y el momento positivo máximo en el centro de la luz, considerando el peso propio de la losa, viga, barrera, diafragmas y carpeta asfáltica.
+            </p>
+
+            <!-- Diagrama del puente -->
+            <div class="bridge-diagram">
+                <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="deckG2" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#94a3b8"/>
+                            <stop offset="100%" stop-color="#475569"/>
+                        </linearGradient>
+                        <linearGradient id="asphaltG" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#334155"/>
+                            <stop offset="100%" stop-color="#1e293b"/>
+                        </linearGradient>
+                        <linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#cbd5e1"/>
+                            <stop offset="100%" stop-color="#64748b"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Título elevación -->
+                    <text x="400" y="20" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Arial" font-weight="600" letter-spacing="2">ELEVACIÓN LONGITUDINAL</text>
+
+                    <!-- Viga simplemente apoyada (elevación) -->
+                    <line x1="80" y1="70" x2="720" y2="70" stroke="url(#beamG)" stroke-width="8"/>
+                    <line x1="80" y1="70" x2="720" y2="70" stroke="#0f1f38" stroke-width="8" stroke-dasharray="0" opacity="0.2"/>
+
+                    <!-- Apoyos -->
+                    <polygon points="80,72 70,90 90,90" fill="#f59e0b"/>
+                    <polygon points="720,72 710,90 730,90" fill="#f59e0b"/>
+                    <line x1="60" y1="90" x2="100" y2="90" stroke="#f59e0b" stroke-width="3"/>
+                    <line x1="700" y1="90" x2="740" y2="90" stroke="#f59e0b" stroke-width="3"/>
+
+                    <!-- Flecha de luz -->
+                    <line x1="80" y1="105" x2="720" y2="105" stroke="#2dd4bf" stroke-width="1"/>
+                    <line x1="80" y1="100" x2="80" y2="110" stroke="#2dd4bf" stroke-width="1"/>
+                    <line x1="720" y1="100" x2="720" y2="110" stroke="#2dd4bf" stroke-width="1"/>
+                    <text x="400" y="120" text-anchor="middle" fill="#2dd4bf" font-size="13" font-family="Cambria Math" font-weight="700">L = 32.00 m</text>
+
+                    <!-- Reacciones -->
+                    <text x="80" y="140" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="Cambria Math" font-weight="700">R</text>
+                    <text x="720" y="140" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="Cambria Math" font-weight="700">R</text>
+
+                    <!-- Título sección -->
+                    <text x="400" y="175" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Arial" font-weight="600" letter-spacing="2">SECCIÓN TRANSVERSAL</text>
+
+                    <!-- Sección transversal del tablero -->
+                    <rect x="100" y="190" width="600" height="20" fill="url(#asphaltG)" rx="2"/>
+                    <rect x="100" y="210" width="600" height="30" fill="url(#deckG2)" rx="2"/>
+
+                    <!-- Barandas -->
+                    <rect x="100" y="200" width="12" height="40" fill="#f59e0b" rx="2"/>
+                    <rect x="688" y="200" width="12" height="40" fill="#f59e0b" rx="2"/>
+
+                    <!-- Vigas (5 vigas) -->
+                    <rect x="130" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="250" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="370" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="490" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="610" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+
+                    <!-- Cotas de separación -->
+                    <line x1="145" y1="295" x2="265" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="145" y1="290" x2="145" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="265" y1="290" x2="265" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <text x="205" y="310" text-anchor="middle" fill="#2dd4bf" font-size="10" font-family="Cambria Math">2.25 m</text>
+
+                    <line x1="265" y1="295" x2="385" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="265" y1="290" x2="265" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="385" y1="290" x2="385" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <text x="325" y="310" text-anchor="middle" fill="#2dd4bf" font-size="10" font-family="Cambria Math">2.25 m</text>
+
+                    <line x1="385" y1="295" x2="505" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="385" y1="290" x2="385" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="505" y1="290" x2="505" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <text x="445" y="310" text-anchor="middle" fill="#2dd4bf" font-size="10" font-family="Cambria Math">2.25 m</text>
+
+                    <line x1="505" y1="295" x2="625" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="505" y1="290" x2="505" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="625" y1="290" x2="625" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <text x="565" y="310" text-anchor="middle" fill="#2dd4bf" font-size="10" font-family="Cambria Math">2.25 m</text>
+
+                    <!-- Ancho total -->
+                    <line x1="100" y1="335" x2="700" y2="335" stroke="#fbbf24" stroke-width="1"/>
+                    <line x1="100" y1="330" x2="100" y2="340" stroke="#fbbf24" stroke-width="1"/>
+                    <line x1="700" y1="330" x2="700" y2="340" stroke="#fbbf24" stroke-width="1"/>
+                    <text x="400" y="350" text-anchor="middle" fill="#fbbf24" font-size="11" font-family="Cambria Math" font-weight="700">Ancho total = 11.40 m</text>
+
+                    <!-- Bombeo 2% -->
+                    <text x="180" y="200" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Cambria Math">2%</text>
+                    <text x="620" y="200" text-anchor="middle" fill="#a78bfa" font-size="9" font-family="Cambria Math">2%</text>
+
+                    <!-- Viga interior resaltada -->
+                    <rect x="370" y="238" width="30" height="44" fill="none" stroke="#2dd4bf" stroke-width="2" rx="2" stroke-dasharray="3,2"/>
+                    <text x="385" y="260" text-anchor="middle" fill="#2dd4bf" font-size="8" font-family="Arial" font-weight="700">VIGA</text>
+                    <text x="385" y="270" text-anchor="middle" fill="#2dd4bf" font-size="8" font-family="Arial" font-weight="700">INTERIOR</text>
+                </svg>
+            </div>
+
+            <!-- Datos del ejercicio -->
+            <h4 style="color: var(--white); margin-bottom: 1rem; font-size: 1rem;">📋 Datos del ejercicio</h4>
+            <div class="data-block">
+                <div class="data-item">
+                    <span class="data-label">Luz del puente</span>
+                    <span><span class="data-value">L = 32.00</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Ancho total</span>
+                    <span><span class="data-value">11.40</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Nº de vigas longitudinales</span>
+                    <span><span class="data-value">5</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Separación entre vigas</span>
+                    <span><span class="data-value">$A_{Trib}$ = 2.25</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Espesor de la losa</span>
+                    <span><span class="data-value">$e_{losa}$ = 0.22</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso unitario del concreto</span>
+                    <span><span class="data-value">$\gamma_c$ = 24.00</span><span class="data-unit">kN/m³</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso propio de cada viga</span>
+                    <span><span class="data-value">$q_{viga}$ = 8.50</span><span class="data-unit">kN/m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Barrera (2), cada una</span>
+                    <span><span class="data-value">$\gamma_{barrera}$ = 7.00</span><span class="data-unit">kN/m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Nº de barreras</span>
+                    <span><span class="data-value">2</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso total del diafragma</span>
+                    <span><span class="data-value">$P_{diaf}$ = 180.00</span><span class="data-unit">kN</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Espesor de carpeta asfáltica</span>
+                    <span><span class="data-value">$e_{asf}$ = 0.08</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso unitario de la carpeta</span>
+                    <span><span class="data-value">$\gamma_{asf}$ = 22.50</span><span class="data-unit">kN/m³</span></span>
+                </div>
+            </div>
+
+            <!-- PASO 1 -->
+            <div class="step-block" data-color="blue">
+                <div class="step-header">
+                    <div class="step-num">1</div>
+                    <h4 class="step-title">Carga de losa tributaria por viga interior</h4>
+                </div>
+                <div class="step-content">
+                    <p>El área tributaria de una viga interior corresponde a la separación entre vigas. La carga distribuida de la losa se obtiene como:</p>
+                    <div class="calc-line">
+                        $$ q_{losa} = A_{Trib} \cdot e_{losa} \cdot \gamma_c = 2.25 \cdot 0.22 \cdot 24.00 = 11.88 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 2 -->
+            <div class="step-block" data-color="teal">
+                <div class="step-header">
+                    <div class="step-num">2</div>
+                    <h4 class="step-title">Peso propio de la viga</h4>
+                </div>
+                <div class="step-content">
+                    <p>Dato proporcionado directamente:</p>
+                    <div class="calc-line">
+                        $$ q_{viga} = 8.50 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 3 -->
+            <div class="step-block" data-color="amber">
+                <div class="step-header">
+                    <div class="step-num">3</div>
+                    <h4 class="step-title">Aporte de las barreras por viga</h4>
+                </div>
+                <div class="step-content">
+                    <p>El peso total de las 2 barreras se distribuye entre las 5 vigas del puente:</p>
+                    <div class="calc-line">
+                        $$ q_{barrera} = \frac{\gamma_{barrera} \cdot N_{barreras}}{N_{vigas}} = \frac{7.00 \cdot 2}{5} = 2.80 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 4 -->
+            <div class="step-block" data-color="purple">
+                <div class="step-header">
+                    <div class="step-num">4</div>
+                    <h4 class="step-title">Aporte de los diafragmas por viga</h4>
+                </div>
+                <div class="step-content">
+                    <p>El peso total de los diafragmas se distribuye sobre la longitud total del puente y entre las vigas:</p>
+                    <div class="calc-line">
+                        $$ q_{diaf} = \frac{P_{diaf}}{L \cdot N_{vigas}} = \frac{180.00}{32.00 \cdot 5} = 1.125 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 5 -->
+            <div class="step-block" data-color="coral">
+                <div class="step-header">
+                    <div class="step-num">5</div>
+                    <h4 class="step-title">Carga muerta estructural (DC)</h4>
+                </div>
+                <div class="step-content">
+                    <p>Suma de todos los componentes estructurales:</p>
+                    <div class="calc-line">
+                        $$ DC = q_{losa} + q_{viga} + q_{barrera} + q_{diaf} = 11.88 + 8.50 + 2.80 + 1.125 = 24.305 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 6 -->
+            <div class="step-block" data-color="blue">
+                <div class="step-header">
+                    <div class="step-num">6</div>
+                    <h4 class="step-title">Carga de superficie de rodadura (DW)</h4>
+                </div>
+                <div class="step-content">
+                    <p>Carga de la carpeta asfáltica por viga interior:</p>
+                    <div class="calc-line">
+                        $$ DW = A_{Trib} \cdot e_{asf} \cdot \gamma_{asf} = 2.25 \cdot 0.08 \cdot 22.50 = 4.05 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 7 -->
+            <div class="step-block" data-color="teal">
+                <div class="step-header">
+                    <div class="step-num">7</div>
+                    <h4 class="step-title">Carga permanente total (qperm)</h4>
+                </div>
+                <div class="step-content">
+                    <div class="calc-line">
+                        $$ q_{perm} = DC + DW = 24.305 + 4.05 = 28.355 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 8 -->
+            <div class="step-block" data-color="amber">
+                <div class="step-header">
+                    <div class="step-num">8</div>
+                    <h4 class="step-title">Reacciones en los apoyos</h4>
+                </div>
+                <div class="step-content">
+                    <p>Para una viga simplemente apoyada con carga uniformemente distribuida:</p>
+                    <div class="calc-line">
+                        $$ R_{DC} = DC \cdot \frac{L}{2} = 24.305 \cdot 16 = 388.88 \text{ kN} $$
+                    </div>
+                    <div class="calc-line">
+                        $$ R_{DW} = DW \cdot \frac{L}{2} = 4.05 \cdot 16 = 64.80 \text{ kN} $$
+                    </div>
+                    <div class="result-line">
+                        Reacción total en cada apoyo: <span class="result-value">$R_T = R_{DC} + R_{DW} = 453.68 \text{ kN}$</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 9 -->
+            <div class="step-block" data-color="coral">
+                <div class="step-header">
+                    <div class="step-num">9</div>
+                    <h4 class="step-title">Momento positivo máximo en el centro de la luz</h4>
+                </div>
+                <div class="step-content">
+                    <p>Para una viga simplemente apoyada con carga uniforme: $M = \frac{qL^2}{8}$</p>
+                    <div class="calc-line">
+                        $$ M_{DC} = DC \cdot \frac{L^2}{8} = 24.305 \cdot \frac{32^2}{8} = 3111.04 \text{ kN·m} $$
+                    </div>
+                    <div class="calc-line">
+                        $$ M_{DW} = DW \cdot \frac{L^2}{8} = 4.05 \cdot \frac{32^2}{8} = 518.40 \text{ kN·m} $$
+                    </div>
+                    <div class="result-line">
+                        Momento total: <span class="result-value">$M_T = M_{DC} + M_{DW} = 3629.44 \text{ kN·m}$</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESUMEN FINAL -->
+            <h4 style="color: var(--white); margin: 2rem 0 0.8rem; font-size: 1.05rem;">📊 Cuadro Resumen de Resultados</h4>
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Parámetro</th>
+                            <th style="text-align:right;">Valor</th>
+                            <th style="text-align:right;">Unidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-group"><td colspan="3">Cargas sobre una viga</td></tr>
+                        <tr>
+                            <td>Carga muerta estructural (DC)</td>
+                            <td class="val">24.305</td>
+                            <td class="unit">kN/m</td>
+                        </tr>
+                        <tr>
+                            <td>Carga de superficie de rodadura (DW)</td>
+                            <td class="val">4.05</td>
+                            <td class="unit">kN/m</td>
+                        </tr>
+                        <tr>
+                            <td>Carga permanente total ($q_{perm}$)</td>
+                            <td class="val">28.355</td>
+                            <td class="unit">kN/m</td>
+                        </tr>
+
+                        <tr class="row-group"><td colspan="3">Reacciones en los apoyos</td></tr>
+                        <tr>
+                            <td>Reacción por carga muerta estructural ($R_{DC}$)</td>
+                            <td class="val">388.88</td>
+                            <td class="unit">kN</td>
+                        </tr>
+                        <tr>
+                            <td>Reacción por superficie de rodadura ($R_{DW}$)</td>
+                            <td class="val">64.80</td>
+                            <td class="unit">kN</td>
+                        </tr>
+                        <tr>
+                            <td>Reacción total ($R_T$)</td>
+                            <td class="val">453.68</td>
+                            <td class="unit">kN</td>
+                        </tr>
+
+                        <tr class="row-group"><td colspan="3">Momentos en el centro de la luz</td></tr>
+                        <tr>
+                            <td>Momento por carga muerta estructural ($M_{DC}$)</td>
+                            <td class="val">3111.04</td>
+                            <td class="unit">kN·m</td>
+                        </tr>
+                        <tr>
+                            <td>Momento por superficie de rodadura ($M_{DW}$)</td>
+                            <td class="val">518.40</td>
+                            <td class="unit">kN·m</td>
+                        </tr>
+                        <tr>
+                            <td>Momento total ($M_T$)</td>
+                            <td class="val">3629.44</td>
+                            <td class="unit">kN·m</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="brand">
+            <span>📘 Manual de Puentes 2018 · MTC Perú</span>
+        </div>
+        <p>Fuente oficial: <strong>Ministerio de Transportes y Comunicaciones del Perú</strong></p>
+        <p style="margin-top: 0.4rem;">Clasificación de cargas según AASHTO LRFD, adoptada por el Manual de Puentes MTC 2018. Para detalles completos, consulte el manual original.</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

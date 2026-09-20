@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puentes seguros, durables y funcionales — Manual MTC 2018</title>
+
+<!-- ============ MATHJAX ============ -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            tags: 'none'
+        },
+        svg: {
+            fontCache: 'global',
+            scale: 1.05
+        },
+        options: {
+            enableMenu: false
+        }
+    };
+</script>
+<script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --navy-900: #0a1628;
+        --navy-800: #0f1f38;
+        --navy-700: #162b4a;
+        --navy-600: #1e3a5f;
+        --teal-500: #14b8a6;
+        --teal-400: #2dd4bf;
+        --teal-300: #5eead4;
+        --cyan-500: #06b6d4;
+        --amber-500: #f59e0b;
+        --amber-400: #fbbf24;
+        --coral-500: #f43f5e;
+        --coral-400: #fb7185;
+        --blue-500: #3b82f6;
+        --blue-400: #60a5fa;
+        --white: #ffffff;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-400: #94a3b8;
+        --gray-600: #475569;
+        --gray-800: #1e293b;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: var(--navy-900);
+        color: var(--white);
+        line-height: 1.55;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .infographic {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 2rem 3rem;
+        position: relative;
+    }
+
+    /* ========== FONDO DECORATIVO ========== */
+    .bg-scene {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .bg-scene .circle {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(1px);
+    }
+
+    .bg-scene .c1 {
+        width: 500px; height: 500px;
+        background: radial-gradient(circle, rgba(20,184,166,0.22), transparent 70%);
+        top: -180px; right: -140px;
+    }
+    .bg-scene .c2 {
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 70%);
+        top: 300px; right: -100px;
+    }
+    .bg-scene .c3 {
+        width: 350px; height: 350px;
+        background: radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%);
+        top: 900px; left: -150px;
+    }
+    .bg-scene .c4 {
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, rgba(244,63,94,0.10), transparent 70%);
+        top: 1600px; right: -100px;
+    }
+    .bg-scene .c5 {
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(20,184,166,0.12), transparent 70%);
+        bottom: 200px; left: -120px;
+    }
+
+    .bg-grid {
+        position: fixed;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+        position: relative;
+        padding: 4rem 0 2rem;
+        z-index: 2;
+    }
+
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    @media (max-width: 900px) {
+        .hero-grid { grid-template-columns: 1fr; }
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(20,184,166,0.12);
+        border: 1px solid rgba(20,184,166,0.3);
+        color: var(--teal-300);
+        padding: 0.4rem 1rem;
+        border-radius: 40px;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+    }
+
+    .hero-badge .pulse-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--teal-400);
+        box-shadow: 0 0 0 4px rgba(45,212,191,0.2);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 4px rgba(45,212,191,0.2); }
+        50% { box-shadow: 0 0 0 8px rgba(45,212,191,0.05); }
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        margin-bottom: 1rem;
+        color: var(--white);
+    }
+
+    .hero h1 .accent {
+        background: linear-gradient(135deg, var(--teal-400) 0%, var(--cyan-500) 50%, var(--blue-400) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+        font-size: clamp(0.98rem, 1.6vw, 1.15rem);
+        color: #b8cce0;
+        max-width: 520px;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero p strong {
+        color: var(--teal-400);
+        font-weight: 600;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+    }
+
+    .stat .num {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--teal-400);
+        line-height: 1;
+    }
+
+    .stat .lbl {
+        font-size: 0.72rem;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+    }
+
+    .hero-visual {
+        position: relative;
+        padding: 1rem;
+    }
+
+    .hero-visual svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+    }
+
+    /* ========== IDEA CENTRAL ========== */
+    .idea-central {
+        position: relative;
+        z-index: 2;
+        margin: 1rem 0 3.5rem;
+        background: linear-gradient(135deg, rgba(20,184,166,0.10), rgba(59,130,246,0.06));
+        border: 1px solid rgba(20,184,166,0.25);
+        border-radius: 20px;
+        padding: 2rem 2.2rem;
+        backdrop-filter: blur(12px);
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    @media (max-width: 700px) {
+        .idea-central { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem; }
+    }
+
+    .idea-icon {
+        width: 64px; height: 64px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, var(--teal-500), var(--cyan-500));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 10px 30px -8px rgba(20,184,166,0.5);
+    }
+
+    .idea-icon svg { width: 32px; height: 32px; }
+
+    .idea-central .idea-label {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--teal-400);
+        margin-bottom: 0.4rem;
+    }
+
+    .idea-central p {
+        font-size: clamp(0.95rem, 1.5vw, 1.08rem);
+        color: #d8e5f2;
+        line-height: 1.65;
+    }
+
+    .idea-central p strong {
+        color: var(--teal-300);
+        font-weight: 600;
+    }
+
+    /* ========== SECTION ========== */
+    .section {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 3.5rem;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .section-num {
+        width: 38px; height: 38px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--teal-500), var(--cyan-500));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--navy-900);
+        flex-shrink: 0;
+    }
+
+    .section-title {
+        font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+        font-weight: 700;
+        color: var(--white);
+    }
+
+    .section-subtitle {
+        font-size: 0.9rem;
+        color: var(--gray-400);
+        margin-bottom: 1.8rem;
+        max-width: 800px;
+        padding-left: 50px;
+        line-height: 1.65;
+    }
+
+    @media (max-width: 600px) {
+        .section-subtitle { padding-left: 0; }
+    }
+
+    /* ========== GOALS GRID ========== */
+    .goals-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+
+    @media (max-width: 900px) { .goals-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .goals-grid { grid-template-columns: 1fr; } }
+
+    .goal-card {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 1.5rem 1.4rem 1.6rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .goal-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--accent);
+    }
+
+    .goal-card::after {
+        content: '';
+        position: absolute;
+        top: -30px; right: -30px;
+        width: 100px; height: 100px;
+        border-radius: 50%;
+        background: var(--accent-glow);
+        opacity: 0.4;
+        transition: opacity 0.3s;
+    }
+
+    .goal-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+        background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+    }
+
+    .goal-card:hover::after { opacity: 0.7; }
+
+    .goal-card[data-color="blue"]   { --accent: var(--blue-400);  --accent-glow: rgba(59,130,246,0.35); }
+    .goal-card[data-color="teal"]   { --accent: var(--teal-400);  --accent-glow: rgba(45,212,191,0.35); }
+    .goal-card[data-color="amber"]  { --accent: var(--amber-400); --accent-glow: rgba(251,191,36,0.35); }
+    .goal-card[data-color="coral"]  { --accent: var(--coral-400); --accent-glow: rgba(251,113,133,0.35); }
+
+    .goal-icon {
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        background: var(--accent-glow);
+        color: var(--accent);
+        position: relative;
+        z-index: 1;
+    }
+
+    .goal-icon svg { width: 24px; height: 24px; }
+
+    .goal-card h3 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .goal-card p {
+        font-size: 0.83rem;
+        color: #a9bdd3;
+        line-height: 1.6;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ========== ECUACIÓN CON MATHJAX ========== */
+    .formula-hero {
+        position: relative;
+        z-index: 2;
+        margin: 0 0 3.5rem;
+        background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(59,130,246,0.10));
+        border: 1px solid rgba(20,184,166,0.3);
+        border-radius: 20px;
+        padding: 2.2rem 2rem;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .formula-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 20% 50%, rgba(20,184,166,0.15), transparent 50%),
+            radial-gradient(circle at 80% 50%, rgba(59,130,246,0.12), transparent 50%);
+    }
+
+    .formula-label {
+        position: relative;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--teal-400);
+        margin-bottom: 1.2rem;
+    }
+
+    .formula-eq {
+        position: relative;
+        font-size: clamp(1.3rem, 3vw, 1.9rem);
+        color: var(--white);
+        margin-bottom: 1.4rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0.5rem 0;
+    }
+
+    /* Colores para términos de MathJax */
+    .formula-eq mjx-container {
+        color: var(--white);
+    }
+
+    .formula-legend {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.4rem;
+        font-size: 0.78rem;
+        color: #b8cce0;
+    }
+
+    .formula-legend span {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .formula-legend .dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* Fórmulas inline dentro de textos */
+    mjx-container[jax="SVG"][display="false"] {
+        color: var(--teal-300);
+        font-size: 1em;
+    }
+
+    /* ========== ESTADOS LÍMITE ========== */
+    .states-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+    }
+
+    @media (max-width: 800px) { .states-grid { grid-template-columns: 1fr; } }
+
+    .state-card {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 1.6rem 1.7rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .state-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 4px; height: 100%;
+        background: var(--accent);
+    }
+
+    .state-card::after {
+        content: attr(data-number);
+        position: absolute;
+        top: 1rem; right: 1.4rem;
+        font-size: 4.5rem;
+        font-weight: 900;
+        color: var(--accent);
+        opacity: 0.08;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        pointer-events: none;
+    }
+
+    .state-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+    }
+
+    .state-card[data-color="teal"]  { --accent: var(--teal-400);  --accent-glow: rgba(45,212,191,0.2); }
+    .state-card[data-color="blue"]  { --accent: var(--blue-400);  --accent-glow: rgba(59,130,246,0.2); }
+    .state-card[data-color="amber"] { --accent: var(--amber-400); --accent-glow: rgba(251,191,36,0.2); }
+    .state-card[data-color="coral"] { --accent: var(--coral-400); --accent-glow: rgba(251,113,133,0.2); }
+
+    .state-top {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 0.9rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .state-badge {
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        background: var(--accent-glow);
+        border: 1.5px solid var(--accent);
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+
+    .state-card h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--white);
+    }
+
+    .state-card > p {
+        font-size: 0.86rem;
+        color: #b0c4d8;
+        line-height: 1.65;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .state-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        gap: 0.4rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .state-list li {
+        font-size: 0.8rem;
+        color: #93a9c2;
+        padding-left: 1.3rem;
+        position: relative;
+        line-height: 1.5;
+    }
+
+    .state-list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.5em;
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+    }
+
+    /* ========== FACTORES ========== */
+    .factors-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.2rem;
+    }
+
+    @media (max-width: 800px) { .factors-grid { grid-template-columns: 1fr; } }
+
+    .factor-card {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 1.7rem 1.6rem;
+        overflow: hidden;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .factor-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+    }
+
+    .factor-card[data-color="blue"]  { --accent: var(--blue-400);  --accent-glow: rgba(59,130,246,0.2); }
+    .factor-card[data-color="teal"]  { --accent: var(--teal-400);  --accent-glow: rgba(45,212,191,0.2); }
+    .factor-card[data-color="amber"] { --accent: var(--amber-400); --accent-glow: rgba(251,191,36,0.2); }
+
+    .factor-head {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        margin-bottom: 0.9rem;
+    }
+
+    .factor-letter {
+        width: 48px; height: 48px;
+        border-radius: 14px;
+        background: var(--accent-glow);
+        border: 1.5px solid var(--accent);
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    .factor-card h3 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--white);
+        line-height: 1.3;
+    }
+
+    .factor-card h3 small {
+        display: block;
+        font-size: 0.72rem;
+        color: var(--accent);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        margin-top: 0.15rem;
+    }
+
+    .factor-card > p {
+        font-size: 0.84rem;
+        color: #b0c4d8;
+        line-height: 1.65;
+        margin-bottom: 1rem;
+    }
+
+    .factor-values {
+        display: grid;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .fv-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.82rem;
+        gap: 0.5rem;
+    }
+
+    .fv-row span:first-child {
+        color: #93a9c2;
+        flex-shrink: 0;
+    }
+
+    .fv-row span:last-child {
+        color: var(--accent);
+        font-weight: 700;
+    }
+
+    /* Fórmula inline del factor */
+    .factor-formula {
+        display: block;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--accent);
+        padding: 0.5rem 0 0.7rem;
+        border-bottom: 1px dashed rgba(255,255,255,0.08);
+        margin-bottom: 0.8rem;
+    }
+
+    /* ========== PASOS ========== */
+    .steps-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        position: relative;
+    }
+
+    @media (max-width: 900px) { .steps-container { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .steps-container { grid-template-columns: 1fr; } }
+
+    .step-card {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 1.4rem 1.3rem;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .step-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent);
+    }
+
+    .step-card[data-color="blue"]  { --accent: var(--blue-400);  --accent-glow: rgba(59,130,246,0.2); }
+    .step-card[data-color="teal"]  { --accent: var(--teal-400);  --accent-glow: rgba(45,212,191,0.2); }
+    .step-card[data-color="amber"] { --accent: var(--amber-400); --accent-glow: rgba(251,191,36,0.2); }
+    .step-card[data-color="coral"] { --accent: var(--coral-400); --accent-glow: rgba(251,113,133,0.2); }
+
+    .step-top {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .step-badge {
+        width: 36px; height: 36px;
+        border-radius: 10px;
+        background: var(--accent-glow);
+        border: 1.5px solid var(--accent);
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .step-card h3 {
+        font-size: 0.98rem;
+        font-weight: 700;
+        color: var(--white);
+    }
+
+    .step-card p {
+        font-size: 0.8rem;
+        color: #b0c4d8;
+        line-height: 1.6;
+    }
+
+    .step-card p strong {
+        color: var(--accent);
+        font-weight: 600;
+    }
+
+    /* ========== REFERENCIAS ========== */
+    .refs-container {
+        position: relative;
+        z-index: 2;
+        background: linear-gradient(135deg, rgba(20,184,166,0.08), rgba(59,130,246,0.05));
+        border: 1px solid rgba(20,184,166,0.2);
+        border-radius: 20px;
+        padding: 2rem 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .refs-header {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-bottom: 1.3rem;
+    }
+
+    .refs-header svg {
+        width: 22px; height: 22px;
+        color: var(--teal-400);
+    }
+
+    .refs-header h3 {
+        font-size: 1rem;
+        color: var(--white);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .refs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 0.7rem;
+    }
+
+    .ref-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7rem;
+        padding: 0.75rem 1rem;
+        background: rgba(255,255,255,0.03);
+        border-radius: 10px;
+        border-left: 3px solid var(--teal-400);
+        transition: background 0.2s ease;
+    }
+
+    .ref-item:hover { background: rgba(255,255,255,0.07); }
+
+    .ref-item .ref-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--teal-400);
+        margin-top: 0.45rem;
+        flex-shrink: 0;
+    }
+
+    .ref-item .ref-text {
+        font-size: 0.82rem;
+        color: #b8cce0;
+        line-height: 1.55;
+    }
+
+    .ref-item .ref-text strong {
+        color: var(--white);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.1rem;
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 2rem 0 1rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: var(--gray-400);
+        font-size: 0.8rem;
+    }
+
+    .footer strong { color: var(--teal-400); }
+
+    .footer .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.6rem;
+        padding: 0.4rem 1rem;
+        background: rgba(255,255,255,0.04);
+        border-radius: 40px;
+        border: 1px solid rgba(255,255,255,0.08);
+        font-size: 0.72rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        font-weight: 600;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 700px) {
+        .infographic { padding: 0 1.2rem 2rem; }
+        .hero { padding: 2.5rem 0 1rem; }
+        .hero-stats { gap: 1.2rem; }
+        .stat .num { font-size: 1.3rem; }
+        .idea-central { padding: 1.5rem; }
+        .section { margin-bottom: 2.5rem; }
+        .formula-hero { padding: 1.5rem 1.2rem; }
+        .refs-container { padding: 1.5rem 1.4rem; }
+    }
+</style>
+</head>
+<body>
+
+<!-- FONDO DECORATIVO -->
+<div class="bg-scene">
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+    <div class="circle c4"></div>
+    <div class="circle c5"></div>
+</div>
+<div class="bg-grid"></div>
+
+<div class="infographic">
+
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="pulse-dot"></span>
+                    Manual de Puentes · MTC 2018
+                </div>
+                <h1>Filosofías de diseño de puentes usadas en el Perú</h1>
+                <p>Aplicación en el Perú según el <strong>Manual de Puentes MTC 2018</strong>, basado en el formato LRFD de AASHTO para garantizar estructuras resilientes durante toda su vida útil.</p>
+
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="num">4</span>
+                        <span class="lbl">Estados límite</span>
+                    </div>
+                    <div class="stat">
+                        <span class="num">3</span>
+                        <span class="lbl">Factores $\eta$</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ilustración del puente -->
+            <div class="hero-visual">
+                <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="archG" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#2dd4bf"/>
+                            <stop offset="50%" stop-color="#06b6d4"/>
+                            <stop offset="100%" stop-color="#60a5fa"/>
+                        </linearGradient>
+                        <linearGradient id="deckG" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#cbd5e1"/>
+                            <stop offset="100%" stop-color="#64748b"/>
+                        </linearGradient>
+                        <linearGradient id="waterG" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="rgba(59,130,246,0.25)"/>
+                            <stop offset="100%" stop-color="rgba(59,130,246,0)"/>
+                        </linearGradient>
+                        <radialGradient id="glowG" cx="0.5" cy="0.5" r="0.5">
+                            <stop offset="0%" stop-color="rgba(45,212,191,0.35)"/>
+                            <stop offset="100%" stop-color="rgba(45,212,191,0)"/>
+                        </radialGradient>
+                    </defs>
+
+                    <ellipse cx="280" cy="200" rx="260" ry="80" fill="url(#glowG)"/>
+                    <rect x="40" y="240" width="480" height="50" fill="url(#waterG)"/>
+                    <rect x="70" y="230" width="50" height="14" fill="#f59e0b" rx="3"/>
+                    <rect x="440" y="230" width="50" height="14" fill="#f59e0b" rx="3"/>
+                    <rect x="85" y="175" width="14" height="60" fill="#3b82f6" rx="2"/>
+                    <rect x="461" y="175" width="14" height="60" fill="#3b82f6" rx="2"/>
+                    <path d="M 90 180 Q 280 30 470 180" fill="none" stroke="url(#archG)" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 90 180 Q 280 55 470 180" fill="none" stroke="url(#archG)" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+                    <g stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="160" y1="108" x2="160" y2="180"/>
+                        <line x1="220" y1="78"  x2="220" y2="180"/>
+                        <line x1="280" y1="65"  x2="280" y2="180"/>
+                        <line x1="340" y1="78"  x2="340" y2="180"/>
+                        <line x1="400" y1="108" x2="400" y2="180"/>
+                    </g>
+                    <g fill="#fbbf24">
+                        <circle cx="160" cy="108" r="3.5"/>
+                        <circle cx="220" cy="78"  r="3.5"/>
+                        <circle cx="280" cy="65"  r="3.5"/>
+                        <circle cx="340" cy="78"  r="3.5"/>
+                        <circle cx="400" cy="108" r="3.5"/>
+                    </g>
+                    <rect x="50" y="180" width="460" height="10" fill="url(#deckG)" rx="2"/>
+                    <line x1="50" y1="175" x2="510" y2="175" stroke="#cbd5e1" stroke-width="1.5" opacity="0.6"/>
+                    <circle cx="90" cy="180" r="4" fill="#2dd4bf">
+                        <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="470" cy="180" r="4" fill="#2dd4bf">
+                        <animate attributeName="opacity" values="1;0.3;1" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="280" cy="65" r="6" fill="#fbbf24" opacity="0.4">
+                        <animate attributeName="r" values="6;14;6" dur="3s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= IDEA CENTRAL ================= -->
+    <div class="idea-central">
+        <div class="idea-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18h6"/>
+                <path d="M10 22h4"/>
+                <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/>
+            </svg>
+        </div>
+        <div>
+            <span class="idea-label">Idea Central</span>
+            <p>El diseño se verifica mediante <strong>estados límite y combinaciones de carga</strong>, buscando seguridad, serviciabilidad y desempeño durante toda la vida útil. El Manual de Puentes del MTC adopta el formato <strong>LRFD (Load and Resistance Factor Design)</strong>, que permite considerar adecuadamente la variabilidad tanto en las cargas como en las propiedades de los elementos resistentes.</p>
+        </div>
+    </div>
+
+    <!-- ================= ECUACIÓN FUNDAMENTAL ================= -->
+    <div class="formula-hero">
+        <div class="formula-label">Ecuación Fundamental del Diseño LRFD</div>
+        <div class="formula-eq">
+            $$ \sum_i \eta_i \gamma_i Q_i \;\leq\; \phi\, R_n \;=\; R_r $$
+        </div>
+        <div class="formula-legend">
+            <span><span class="dot" style="background:#60a5fa;"></span> $\gamma_i$ = Factor de carga</span>
+            <span><span class="dot" style="background:#fbbf24;"></span> $\phi$ = Factor de resistencia</span>
+            <span><span class="dot" style="background:#2dd4bf;"></span> $\eta_i$ = Modificador de carga</span>
+            <span><span class="dot" style="background:#f43f5e;"></span> $Q_i$ = Solicitación · $R_n$ = Resistencia nominal</span>
+        </div>
+    </div>
+
+    <!-- ================= 01 · ¿QUÉ BUSCA EL DISEÑO? ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">01</div>
+            <h2 class="section-title">¿Qué busca el diseño?</h2>
+        </div>
+        <p class="section-subtitle">Los puentes deben ser diseñados cumpliendo simultáneamente cuatro objetivos fundamentales que garantizan su desempeño a lo largo de su vida útil.</p>
+
+        <div class="goals-grid">
+            <div class="goal-card" data-color="blue">
+                <div class="goal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <h3>Seguridad</h3>
+                <p>Resistir las acciones previstas durante la construcción y el uso del puente. La estructura debe soportar todas las combinaciones de carga sin poner en riesgo la vida de los usuarios.</p>
+            </div>
+
+            <div class="goal-card" data-color="teal">
+                <div class="goal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                    </svg>
+                </div>
+                <h3>Constructibilidad</h3>
+                <p>Facilitar la ejecución e inspección. Se consideran los procesos constructivos, la secuencia de montaje y la facilidad de acceso para el mantenimiento posterior.</p>
+            </div>
+
+            <div class="goal-card" data-color="amber">
+                <div class="goal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                </div>
+                <h3>Servicio</h3>
+                <p>Controlar deformaciones, esfuerzos y ancho de grietas bajo condiciones normales de operación. Se limita la deflexión para asegurar la comodidad del usuario.</p>
+            </div>
+
+            <div class="goal-card" data-color="coral">
+                <div class="goal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <h3>Durabilidad</h3>
+                <p>Conservar el desempeño estructural en el tiempo. Se consideran la corrosión, la fatiga de materiales, los ciclos térmicos y la exposición ambiental.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 02 · ESTADOS LÍMITE ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">02</div>
+            <h2 class="section-title">Los 4 estados límite</h2>
+        </div>
+        <p class="section-subtitle">Cada componente y conexión debe satisfacer la ecuación fundamental para cada estado límite aplicable. Estos representan las diferentes condiciones que debe cumplir la estructura a lo largo de su vida útil.</p>
+
+        <div class="states-grid">
+            <div class="state-card" data-color="teal" data-number="01">
+                <div class="state-top">
+                    <div class="state-badge">01</div>
+                    <h3>Servicio</h3>
+                </div>
+                <p>Restringe los esfuerzos, deformaciones y ancho de grietas bajo condiciones normales de servicio.</p>
+                <ul class="state-list">
+                    <li>Controla la deflexión por carga viva</li>
+                    <li>Limita el ancho de fisuras en concreto</li>
+                    <li>Verifica el deslizamiento en conexiones</li>
+                    <li>Establece requisitos de tensión en pretensado</li>
+                </ul>
+            </div>
+
+            <div class="state-card" data-color="blue" data-number="02">
+                <div class="state-top">
+                    <div class="state-badge">02</div>
+                    <h3>Fatiga y fractura</h3>
+                </div>
+                <p>Limita el crecimiento de grietas por cargas repetitivas y exige tenacidad del material.</p>
+                <ul class="state-list">
+                    <li>Restringe el rango de esfuerzos por un solo camión</li>
+                    <li>Aplica a detalles sujetos a tracción</li>
+                    <li>Considera el número esperado de ciclos de carga</li>
+                    <li>Requiere tenacidad Charpy V-Notch en acero</li>
+                </ul>
+            </div>
+
+            <div class="state-card" data-color="amber" data-number="03">
+                <div class="state-top">
+                    <div class="state-badge">03</div>
+                    <h3>Resistencia</h3>
+                </div>
+                <p>Asegura resistencia y estabilidad local y global ante combinaciones de carga estadísticamente esperadas.</p>
+                <ul class="state-list">
+                    <li>Resistencia I: uso vehicular normal sin viento</li>
+                    <li>Resistencia II: vehículos de diseño especiales</li>
+                    <li>Resistencia III: viento mayor a 90 km/h</li>
+                    <li>Resistencia IV: alta relación carga muerta/viva</li>
+                    <li>Resistencia V: uso normal con viento a 90 km/h</li>
+                </ul>
+            </div>
+
+            <div class="state-card" data-color="coral" data-number="04">
+                <div class="state-top">
+                    <div class="state-badge">04</div>
+                    <h3>Evento extremo</h3>
+                </div>
+                <p>Busca la supervivencia estructural ante sismos, inundaciones, colisiones o socavación severa.</p>
+                <ul class="state-list">
+                    <li>Evento Extremo I: sismo con 7% de probabilidad en 75 años</li>
+                    <li>Evento Extremo II: colisiones, hielo, flujos severos</li>
+                    <li>Considera licuefacción y movimiento de taludes</li>
+                    <li>Requiere análisis sísmico específico del sitio</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 03 · FACTORES ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">03</div>
+            <h2 class="section-title">Factores que modifican el margen de seguridad</h2>
+        </div>
+        <p class="section-subtitle">El factor de modificación de carga relaciona la ductilidad, redundancia e importancia operativa de la estructura para ajustar los efectos de las cargas de diseño.</p>
+
+        <div class="factors-grid">
+            <div class="factor-card" data-color="blue">
+                <div class="factor-head">
+                    <div class="factor-letter">D</div>
+                    <h3>Ductilidad<small>$\eta_D$</small></h3>
+                </div>
+                <p>Permite deformaciones inelásticas visibles y disipación de energía antes de la falla. Un sistema dúctil advierte la ocurrencia de falla estructural mediante deformaciones significativas.</p>
+                <div class="factor-formula">$\eta_D \geq 1.05$ · $1.00$ · $0.95$</div>
+                <div class="factor-values">
+                    <div class="fv-row"><span>No dúctil</span><span>$\geq 1.05$</span></div>
+                    <div class="fv-row"><span>Convencional</span><span>$1.00$</span></div>
+                    <div class="fv-row"><span>Mejorado</span><span>$0.95$</span></div>
+                </div>
+            </div>
+
+            <div class="factor-card" data-color="teal">
+                <div class="factor-head">
+                    <div class="factor-letter">R</div>
+                    <h3>Redundancia<small>$\eta_R$</small></h3>
+                </div>
+                <p>Incorpora rutas múltiples de carga para mantener la capacidad si un elemento falla. Se prefieren estructuras continuas y con múltiples trayectorias de carga.</p>
+                <div class="factor-formula">$\eta_R \geq 1.05$ · $1.00$ · $0.95$</div>
+                <div class="factor-values">
+                    <div class="fv-row"><span>No redundante</span><span>$\geq 1.05$</span></div>
+                    <div class="fv-row"><span>Convencional</span><span>$1.00$</span></div>
+                    <div class="fv-row"><span>Excepcional</span><span>$0.95$</span></div>
+                </div>
+            </div>
+
+            <div class="factor-card" data-color="amber">
+                <div class="factor-head">
+                    <div class="factor-letter">I</div>
+                    <h3>Importancia operativa<small>$\eta_I$</small></h3>
+                </div>
+                <p>Considera las consecuencias de que un puente crítico quede fuera de servicio. Se clasifican los puentes en críticos, esenciales o de menor importancia.</p>
+                <div class="factor-formula">$\eta_I \geq 1.05$ · $1.00$ · $0.95$</div>
+                <div class="factor-values">
+                    <div class="fv-row"><span>Crítico / Esencial</span><span>$\geq 1.05$</span></div>
+                    <div class="fv-row"><span>Típico</span><span>$1.00$</span></div>
+                    <div class="fv-row"><span>Menor importancia</span><span>$0.95$</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 04 · APLICACIÓN ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">04</div>
+            <h2 class="section-title">¿Cómo se aplica en un proyecto?</h2>
+        </div>
+        <p class="section-subtitle">El proceso de diseño sigue una secuencia lógica que permite verificar el cumplimiento de todos los requisitos normativos del Manual de Puentes MTC 2018.</p>
+
+        <div class="steps-container">
+            <div class="step-card" data-color="blue">
+                <div class="step-top">
+                    <div class="step-badge">1</div>
+                    <h3>Definir</h3>
+                </div>
+                <p><strong>Función, ambiente e importancia.</strong> Se establece el uso del puente, las condiciones del sitio (topografía, hidrología, geotecnia, sismicidad) y su clasificación operativa.</p>
+            </div>
+
+            <div class="step-card" data-color="teal">
+                <div class="step-top">
+                    <div class="step-badge">2</div>
+                    <h3>Combinar</h3>
+                </div>
+                <p><strong>Cargas permanentes, variables y excepcionales.</strong> Se identifican todas las cargas actuantes y se combinan según los factores correspondientes a cada estado límite.</p>
+            </div>
+
+            <div class="step-card" data-color="amber">
+                <div class="step-top">
+                    <div class="step-badge">3</div>
+                    <h3>Verificar</h3>
+                </div>
+                <p><strong>Cada estado límite.</strong> Se verifica que la resistencia factorizada sea mayor o igual a las solicitaciones factorizadas para servicio, fatiga, resistencia y evento extremo.</p>
+            </div>
+
+            <div class="step-card" data-color="coral">
+                <div class="step-top">
+                    <div class="step-badge">4</div>
+                    <h3>Detallar</h3>
+                </div>
+                <p><strong>Ductilidad, continuidad e inspección.</strong> Se definen los detalles constructivos que garantizan el comportamiento dúctil, la continuidad estructural y la facilidad de inspección.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= REFERENCIAS ================= -->
+    <section class="refs-container">
+        <div class="refs-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <h3>Referencias en el Manual de Puentes 2018 – MTC</h3>
+        </div>
+
+        <div class="refs-grid">
+            <div class="ref-item">
+                <span class="ref-dot"></span>
+                <div class="ref-text">
+                    <strong>Filosofía de Diseño</strong>
+                    Artículo 2.3.2 · AASHTO 1.3
+                </div>
+            </div>
+
+            <div class="ref-item">
+                <span class="ref-dot"></span>
+                <div class="ref-text">
+                    <strong>Estados Límite</strong>
+                    Artículos 2.3.2.2.1 a 2.3.2.2.5
+                </div>
+            </div>
+
+            <div class="ref-item">
+                <span class="ref-dot"></span>
+                <div class="ref-text">
+                    <strong>Ductilidad, Redundancia e Importancia</strong>
+                    Artículos 2.3.2.3 a 2.3.2.5
+                </div>
+            </div>
+
+            <div class="ref-item">
+                <span class="ref-dot"></span>
+                <div class="ref-text">
+                    <strong>Factores y Combinaciones de Carga</strong>
+                    Artículo 2.4.5 · AASHTO 3.4
+                </div>
+            </div>
+
+            <div class="ref-item">
+                <span class="ref-dot"></span>
+                <div class="ref-text">
+                    <strong>Peligro Sísmico y Espectros</strong>
+                    Artículo 1.4 · Apéndice A3
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="brand">
+            <span>📘 Manual de Puentes 2018 · MTC Perú</span>
+        </div>
+        <p>Fuente oficial: <strong>Ministerio de Transportes y Comunicaciones del Perú</strong></p>
+    </footer>
+
+</div>
+
+</body>
+</html>
