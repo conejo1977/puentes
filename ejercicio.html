@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejercicio Resuelto · Cargas Permanentes en Viga Interior de Puente</title>
+
+<!-- ============ MATHJAX ============ -->
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            tags: 'none'
+        },
+        svg: { fontCache: 'global', scale: 1.05 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --navy-900: #0a1628;
+        --navy-800: #0f1f38;
+        --teal-500: #14b8a6;
+        --teal-400: #2dd4bf;
+        --teal-300: #5eead4;
+        --cyan-500: #06b6d4;
+        --amber-500: #f59e0b;
+        --amber-400: #fbbf24;
+        --coral-500: #f43f5e;
+        --coral-400: #fb7185;
+        --blue-500: #3b82f6;
+        --blue-400: #60a5fa;
+        --purple-500: #8b5cf6;
+        --purple-400: #a78bfa;
+        --white: #ffffff;
+        --gray-400: #94a3b8;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: var(--navy-900);
+        color: var(--white);
+        line-height: 1.55;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .infographic {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 2rem 3rem;
+        position: relative;
+    }
+
+    /* ========== FONDO DECORATIVO ========== */
+    .bg-scene {
+        position: fixed; inset: 0;
+        pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .bg-scene .circle { position: absolute; border-radius: 50%; filter: blur(1px); }
+    .bg-scene .c1 { width: 520px; height: 520px; background: radial-gradient(circle, rgba(20,184,166,0.20), transparent 70%); top: -190px; right: -150px; }
+    .bg-scene .c2 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(139,92,246,0.15), transparent 70%); top: 400px; right: -120px; }
+    .bg-scene .c3 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(245,158,11,0.12), transparent 70%); top: 1100px; left: -160px; }
+    .bg-scene .c4 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(244,63,94,0.10), transparent 70%); top: 1900px; right: -100px; }
+    .bg-scene .c5 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(20,184,166,0.12), transparent 70%); bottom: 300px; left: -140px; }
+
+    /* --- Animación de los halos de fondo --- */
+    @keyframes driftA {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+        50%      { transform: translate3d(-55px, 70px, 0) scale(1.15); }
+    }
+    @keyframes driftB {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+        50%      { transform: translate3d(60px, -55px, 0) scale(0.9); }
+    }
+    @keyframes driftC {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+        50%      { transform: translate3d(45px, 55px, 0) scale(1.2); }
+    }
+    .bg-scene .c1 { animation: driftA 22s ease-in-out infinite; }
+    .bg-scene .c2 { animation: driftB 28s ease-in-out infinite; }
+    .bg-scene .c3 { animation: driftC 25s ease-in-out infinite; }
+    .bg-scene .c4 { animation: driftA 33s ease-in-out infinite reverse; }
+    .bg-scene .c5 { animation: driftB 27s ease-in-out infinite reverse; }
+
+    .bg-grid {
+        position: fixed; inset: -60px;
+        background-image:
+            linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none; z-index: 0;
+        will-change: transform;
+        animation: gridDrift 30s linear infinite;
+    }
+    @keyframes gridDrift {
+        from { transform: translate3d(0, 0, 0); }
+        to   { transform: translate3d(60px, 60px, 0); }
+    }
+
+    /* --- Capa de partículas animadas --- */
+    .bg-particles {
+        position: fixed; inset: 0;
+        pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .particle {
+        position: absolute;
+        bottom: -30px;
+        border-radius: 50%;
+        opacity: 0;
+        will-change: transform, opacity;
+        animation-name: riseUp;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+    @keyframes riseUp {
+        0%   { transform: translate3d(0, 0, 0) scale(0.4); opacity: 0; }
+        8%   { opacity: var(--peak, 0.6); }
+        85%  { opacity: var(--peak, 0.6); }
+        100% { transform: translate3d(var(--drift, 30px), -112vh, 0) scale(1.15); opacity: 0; }
+    }
+
+    /* ========== HERO ========== */
+    .hero { position: relative; padding: 3.5rem 0 1.5rem; z-index: 2; }
+
+    .hero-badge {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: rgba(139,92,246,0.12);
+        border: 1px solid rgba(167,139,250,0.35);
+        color: var(--purple-400);
+        padding: 0.4rem 1rem; border-radius: 40px;
+        font-size: 0.72rem; letter-spacing: 0.15em;
+        text-transform: uppercase; font-weight: 700;
+        margin-bottom: 1.2rem;
+    }
+    .hero-badge .pulse-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--purple-400);
+        box-shadow: 0 0 0 4px rgba(167,139,250,0.2);
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 0 4px rgba(167,139,250,0.2); }
+        50% { box-shadow: 0 0 0 8px rgba(167,139,250,0.05); }
+    }
+
+    .hero h1 {
+        font-size: clamp(1.9rem, 4.5vw, 3rem);
+        font-weight: 800; letter-spacing: -0.03em;
+        line-height: 1.08; margin-bottom: 1rem;
+    }
+    .hero h1 .accent {
+        background: linear-gradient(135deg, var(--purple-400) 0%, var(--teal-400) 60%, var(--cyan-500) 100%);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+        font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+        color: #b8cce0; max-width: 820px; margin-bottom: 1rem;
+    }
+    .hero p strong { color: var(--teal-400); font-weight: 600; }
+
+    /* ========== SECTION ========== */
+    .section { position: relative; z-index: 2; margin-bottom: 3rem; }
+
+    .section-header {
+        display: flex; align-items: center; gap: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+    .section-num {
+        width: 38px; height: 38px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--purple-500), var(--cyan-500));
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.95rem;
+        color: var(--navy-900); flex-shrink: 0;
+    }
+    .section-title {
+        font-size: clamp(1.3rem, 2.5vw, 1.65rem);
+        font-weight: 700; color: var(--white);
+    }
+    .section-subtitle {
+        font-size: 0.9rem; color: var(--gray-400);
+        margin-bottom: 1.8rem; max-width: 850px;
+        padding-left: 50px; line-height: 1.65;
+    }
+
+    /* ========== EJERCICIO ========== */
+    .exercise-container {
+        position: relative; z-index: 2;
+        background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(20,184,166,0.05));
+        border: 1px solid rgba(139,92,246,0.25);
+        border-radius: 24px;
+        padding: 2.5rem 2.2rem;
+        margin-bottom: 2rem;
+    }
+    .exercise-header {
+        display: flex; align-items: center; gap: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+    .exercise-badge {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: rgba(139,92,246,0.15);
+        border: 1px solid rgba(167,139,250,0.4);
+        color: var(--purple-400);
+        padding: 0.4rem 1rem; border-radius: 40px;
+        font-size: 0.72rem; font-weight: 700;
+        letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .exercise-title {
+        font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+        font-weight: 800; color: var(--white);
+        margin-bottom: 1rem;
+    }
+    .exercise-title .accent {
+        background: linear-gradient(135deg, var(--purple-400), var(--teal-400));
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .exercise-description {
+        font-size: 0.95rem; color: #b8cce0;
+        line-height: 1.7; margin-bottom: 2rem;
+        max-width: 900px;
+    }
+
+    /* Diagrama del puente */
+    .bridge-diagram {
+        background: rgba(0,0,0,0.2);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .bridge-diagram svg { width: 100%; height: auto; display: block; }
+
+    .diagram-caption {
+        font-size: 0.8rem; color: var(--gray-400);
+        margin-top: 0.9rem; text-align: center; line-height: 1.6;
+    }
+    .diagram-caption strong { color: var(--amber-400); font-weight: 700; }
+
+    /* Data del ejercicio */
+    .data-block {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+    }
+    .data-item {
+        display: flex; justify-content: space-between;
+        align-items: center;
+        background: rgba(255,255,255,0.03);
+        border-left: 3px solid var(--teal-400);
+        padding: 0.65rem 1rem;
+        border-radius: 0 8px 8px 0;
+        font-size: 0.88rem;
+    }
+    .data-item .data-label { color: #b8cce0; }
+    .data-item .data-value {
+        color: var(--white);
+        font-weight: 700;
+        font-family: 'Cambria Math', serif;
+    }
+    .data-item .data-unit {
+        color: var(--teal-400);
+        font-size: 0.78rem;
+        margin-left: 0.3rem;
+    }
+
+    /* Pasos del ejercicio */
+    .step-block {
+        background: rgba(255,255,255,0.03);
+        border-radius: 14px;
+        padding: 1.5rem 1.6rem;
+        margin-bottom: 1.2rem;
+        border-left: 4px solid var(--teal-400);
+        transition: background 0.2s ease;
+    }
+    .step-block:hover { background: rgba(255,255,255,0.05); }
+
+    .step-block[data-color="blue"]   { border-left-color: var(--blue-400); }
+    .step-block[data-color="teal"]   { border-left-color: var(--teal-400); }
+    .step-block[data-color="amber"]  { border-left-color: var(--amber-400); }
+    .step-block[data-color="coral"]  { border-left-color: var(--coral-400); }
+    .step-block[data-color="purple"] { border-left-color: var(--purple-400); }
+
+    .step-header {
+        display: flex; align-items: center; gap: 0.7rem;
+        margin-bottom: 1rem;
+    }
+    .step-num {
+        width: 30px; height: 30px; border-radius: 8px;
+        background: rgba(255,255,255,0.08);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 0.85rem;
+        color: var(--teal-300);
+        flex-shrink: 0;
+    }
+    .step-block[data-color="blue"]   .step-num { color: var(--blue-400); background: rgba(59,130,246,0.12); }
+    .step-block[data-color="teal"]   .step-num { color: var(--teal-400); background: rgba(45,212,191,0.12); }
+    .step-block[data-color="amber"]  .step-num { color: var(--amber-400); background: rgba(251,191,36,0.12); }
+    .step-block[data-color="coral"]  .step-num { color: var(--coral-400); background: rgba(251,113,133,0.12); }
+    .step-block[data-color="purple"] .step-num { color: var(--purple-400); background: rgba(167,139,250,0.12); }
+
+    .step-title {
+        font-size: 1rem; font-weight: 700;
+        color: var(--white);
+    }
+    .step-content {
+        font-size: 0.88rem;
+        color: #b8cce0;
+        line-height: 1.7;
+    }
+    .step-content p { margin-bottom: 0.7rem; }
+    .step-content p:last-child { margin-bottom: 0; }
+
+    .calc-line {
+        background: rgba(0,0,0,0.25);
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        margin: 0.6rem 0;
+        font-size: 0.9rem;
+        color: var(--teal-300);
+        overflow-x: auto;
+        border-left: 2px solid var(--teal-500);
+    }
+
+    .result-line {
+        background: linear-gradient(90deg, rgba(20,184,166,0.15), rgba(20,184,166,0.05));
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        margin: 0.6rem 0;
+        font-size: 0.95rem;
+        color: var(--white);
+        font-weight: 700;
+        border-left: 3px solid var(--teal-400);
+    }
+    .result-line .result-value {
+        color: var(--teal-300);
+        font-family: 'Cambria Math', serif;
+        font-size: 1.05rem;
+    }
+
+    /* Resumen final del ejercicio */
+    .summary-table-wrap {
+        overflow-x: auto;
+        border-radius: 14px;
+        border: 1px solid rgba(20,184,166,0.25);
+        margin-top: 1.5rem;
+    }
+    .summary-table {
+        width: 100%; border-collapse: collapse;
+        font-size: 0.88rem;
+        background: rgba(20,184,166,0.04);
+    }
+    .summary-table th {
+        background: linear-gradient(135deg, rgba(20,184,166,0.25), rgba(6,182,212,0.15));
+        color: var(--white); font-weight: 700;
+        padding: 0.9rem 1.1rem; text-align: left;
+        font-size: 0.78rem; letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+    .summary-table td {
+        padding: 0.8rem 1.1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        color: #b8cce0;
+    }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table tr:hover td { background: rgba(255,255,255,0.03); }
+    .summary-table .val {
+        color: var(--teal-300);
+        font-weight: 700;
+        font-family: 'Cambria Math', serif;
+        text-align: right;
+    }
+    .summary-table .unit {
+        color: var(--gray-400);
+        font-size: 0.78rem;
+        text-align: right;
+    }
+    .summary-table .row-group td {
+        background: rgba(20,184,166,0.08);
+        color: var(--teal-300);
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+        position: relative; z-index: 2;
+        text-align: center; padding: 2rem 0 1rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: var(--gray-400); font-size: 0.8rem;
+    }
+    .footer strong { color: var(--teal-400); }
+    .footer .brand {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        margin-bottom: 0.6rem; padding: 0.4rem 1rem;
+        background: rgba(255,255,255,0.04);
+        border-radius: 40px;
+        border: 1px solid rgba(255,255,255,0.08);
+        font-size: 0.72rem; letter-spacing: 0.15em;
+        text-transform: uppercase; color: var(--gray-400);
+        font-weight: 600;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 700px) {
+        .infographic { padding: 0 1.2rem 2rem; }
+        .hero { padding: 2.2rem 0 1rem; }
+        .section { margin-bottom: 2.2rem; }
+        .section-subtitle { padding-left: 0; }
+        .exercise-container { padding: 1.5rem 1.2rem; }
+    }
+
+    /* ========== ACCESIBILIDAD: MOVIMIENTO REDUCIDO ========== */
+    @media (prefers-reduced-motion: reduce) {
+        .bg-scene .circle,
+        .bg-grid,
+        .particle,
+        .hero-badge .pulse-dot { animation: none !important; }
+        .particle { display: none; }
+    }
+</style>
+</head>
+<body>
+
+<!-- FONDO DECORATIVO -->
+<div class="bg-scene">
+    <div class="circle c1"></div>
+    <div class="circle c2"></div>
+    <div class="circle c3"></div>
+    <div class="circle c4"></div>
+    <div class="circle c5"></div>
+</div>
+<div class="bg-grid"></div>
+<div class="bg-particles" id="particles" aria-hidden="true"></div>
+
+<div class="infographic">
+
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+        <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            Ejercicio Resuelto · AASHTO LRFD · MTC 2018
+        </div>
+        <h1>Cargas Permanentes en una <span class="accent">Viga Interior de Puente</span></h1>
+        <p>Aplicación de la clasificación de cargas permanentes <strong>(DC y DW)</strong> al cálculo de una viga interior de un puente simplemente apoyado: carga distribuida, reacciones en los apoyos y momento positivo máximo en el centro de la luz.</p>
+    </header>
+
+    <!-- ================= EJERCICIO ================= -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-num">05</div>
+            <h2 class="section-title">Ejercicio Práctico Resuelto</h2>
+        </div>
+        <p class="section-subtitle">Determinación de la carga permanente total sobre una viga interior, considerando el peso propio de la losa, la viga, las barreras, los diafragmas y la carpeta asfáltica.</p>
+
+        <div class="exercise-container">
+            <div class="exercise-header">
+                <span class="exercise-badge">📝 Ejercicio Resuelto</span>
+            </div>
+            <h3 class="exercise-title">Cargas en una <span class="accent">viga interior de un puente</span></h3>
+            <p class="exercise-description">
+                Determinar la carga permanente total sobre una viga interior de un puente simplemente apoyado, así como las reacciones en los apoyos y el momento positivo máximo en el centro de la luz, considerando el peso propio de la losa, viga, barrera, diafragmas y carpeta asfáltica.
+            </p>
+
+            <!-- ============ DIAGRAMA ESTRUCTURAL ============ -->
+            <div class="bridge-diagram">
+                <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="deckG2" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#94a3b8"/>
+                            <stop offset="100%" stop-color="#475569"/>
+                        </linearGradient>
+                        <linearGradient id="asphaltG" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#334155"/>
+                            <stop offset="100%" stop-color="#1e293b"/>
+                        </linearGradient>
+                        <linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#cbd5e1"/>
+                            <stop offset="100%" stop-color="#64748b"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Título elevación (texto plano, no es notación) -->
+                    <text x="400" y="20" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Arial" font-weight="600" letter-spacing="2">ELEVACIÓN LONGITUDINAL</text>
+
+                    <!-- Viga simplemente apoyada (elevación) -->
+                    <line x1="80" y1="70" x2="720" y2="70" stroke="url(#beamG)" stroke-width="8"/>
+                    <line x1="80" y1="70" x2="720" y2="70" stroke="#0f1f38" stroke-width="8" stroke-dasharray="0" opacity="0.2"/>
+
+                    <!-- ===== APOYO FIJO (IZQUIERDA) ===== -->
+                    <polygon points="80,72 70,90 90,90" fill="#f59e0b"/>
+                    <line x1="58" y1="90" x2="102" y2="90" stroke="#f59e0b" stroke-width="3"/>
+                    <g stroke="#f59e0b" stroke-width="1" opacity="0.45">
+                        <line x1="62" y1="90" x2="58" y2="95"/>
+                        <line x1="72" y1="90" x2="68" y2="95"/>
+                        <line x1="82" y1="90" x2="78" y2="95"/>
+                        <line x1="92" y1="90" x2="88" y2="95"/>
+                    </g>
+
+                    <!-- ===== APOYO MÓVIL CON RODILLOS (DERECHA) ===== -->
+                    <polygon points="720,74 710,86 730,86" fill="#f59e0b"/>
+                    <circle cx="714" cy="90" r="3.5" fill="#fbbf24" stroke="#0a1628" stroke-width="1"/>
+                    <circle cx="726" cy="90" r="3.5" fill="#fbbf24" stroke="#0a1628" stroke-width="1"/>
+                    <line x1="698" y1="95" x2="742" y2="95" stroke="#f59e0b" stroke-width="3"/>
+                    <g stroke="#f59e0b" stroke-width="1" opacity="0.45">
+                        <line x1="702" y1="95" x2="698" y2="99"/>
+                        <line x1="712" y1="95" x2="708" y2="99"/>
+                        <line x1="722" y1="95" x2="718" y2="99"/>
+                        <line x1="732" y1="95" x2="728" y2="99"/>
+                    </g>
+
+                    <!-- Flecha de luz -->
+                    <line x1="80" y1="105" x2="720" y2="105" stroke="#2dd4bf" stroke-width="1"/>
+                    <line x1="80" y1="100" x2="80" y2="110" stroke="#2dd4bf" stroke-width="1"/>
+                    <line x1="720" y1="100" x2="720" y2="110" stroke="#2dd4bf" stroke-width="1"/>
+
+                    <!-- Notación MathJax: L = 32.00 m -->
+                    <foreignObject x="300" y="105" width="200" height="30">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#2dd4bf;font-weight:700;font-size:13px;line-height:1;">
+                            $L = 32.00 \ \text{m}$
+                        </div>
+                    </foreignObject>
+
+                    <!-- Reacciones R + etiqueta de apoyo (MathJax + texto) -->
+                    <foreignObject x="36" y="122" width="88" height="48">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fbbf24;font-weight:700;font-size:12px;line-height:1.3;">
+                            <div>$R$</div>
+                            <div style="font-size:7.5px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;">APOYO FIJO</div>
+                        </div>
+                    </foreignObject>
+                    <foreignObject x="676" y="122" width="98" height="48">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fbbf24;font-weight:700;font-size:12px;line-height:1.3;">
+                            <div>$R$</div>
+                            <div style="font-size:7.5px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;">APOYO MÓVIL</div>
+                        </div>
+                    </foreignObject>
+
+                    <!-- Título sección (texto plano) -->
+                    <text x="400" y="175" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Arial" font-weight="600" letter-spacing="2">SECCIÓN TRANSVERSAL</text>
+
+                    <!-- Sección transversal del tablero -->
+                    <rect x="100" y="190" width="600" height="20" fill="url(#asphaltG)" rx="2"/>
+                    <rect x="100" y="210" width="600" height="30" fill="url(#deckG2)" rx="2"/>
+
+                    <!-- Barandas -->
+                    <rect x="100" y="200" width="12" height="40" fill="#f59e0b" rx="2"/>
+                    <rect x="688" y="200" width="12" height="40" fill="#f59e0b" rx="2"/>
+
+                    <!-- Vigas (5 vigas) -->
+                    <rect x="130" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="250" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="370" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="490" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+                    <rect x="610" y="240" width="30" height="40" fill="url(#beamG)" rx="2"/>
+
+                    <!-- Cotas de separación con MathJax -->
+                    <line x1="145" y1="295" x2="265" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="145" y1="290" x2="145" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="265" y1="290" x2="265" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <foreignObject x="170" y="297" width="70" height="26">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#2dd4bf;font-size:10px;line-height:1;">
+                            $2.25 \ \text{m}$
+                        </div>
+                    </foreignObject>
+
+                    <line x1="265" y1="295" x2="385" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="265" y1="290" x2="265" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="385" y1="290" x2="385" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <foreignObject x="290" y="297" width="70" height="26">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#2dd4bf;font-size:10px;line-height:1;">
+                            $2.25 \ \text{m}$
+                        </div>
+                    </foreignObject>
+
+                    <line x1="385" y1="295" x2="505" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="385" y1="290" x2="385" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="505" y1="290" x2="505" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <foreignObject x="410" y="297" width="70" height="26">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#2dd4bf;font-size:10px;line-height:1;">
+                            $2.25 \ \text{m}$
+                        </div>
+                    </foreignObject>
+
+                    <line x1="505" y1="295" x2="625" y2="295" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="505" y1="290" x2="505" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <line x1="625" y1="290" x2="625" y2="300" stroke="#2dd4bf" stroke-width="0.8"/>
+                    <foreignObject x="530" y="297" width="70" height="26">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#2dd4bf;font-size:10px;line-height:1;">
+                            $2.25 \ \text{m}$
+                        </div>
+                    </foreignObject>
+
+                    <!-- Ancho total con MathJax -->
+                    <line x1="100" y1="335" x2="700" y2="335" stroke="#fbbf24" stroke-width="1"/>
+                    <line x1="100" y1="330" x2="100" y2="340" stroke="#fbbf24" stroke-width="1"/>
+                    <line x1="700" y1="330" x2="700" y2="340" stroke="#fbbf24" stroke-width="1"/>
+                    <foreignObject x="260" y="336" width="280" height="28">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-weight:700;font-size:11px;line-height:1;">
+                            $\text{Ancho total} = 11.40 \ \text{m}$
+                        </div>
+                    </foreignObject>
+
+                    <!-- Bombeo 2% con MathJax -->
+                    <foreignObject x="160" y="189" width="40" height="22">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#a78bfa;font-size:9px;line-height:1;">
+                            $2\%$
+                        </div>
+                    </foreignObject>
+                    <foreignObject x="600" y="189" width="40" height="22">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#a78bfa;font-size:9px;line-height:1;">
+                            $2\%$
+                        </div>
+                    </foreignObject>
+
+                    <!-- Viga interior resaltada (etiquetas de texto plano) -->
+                    <rect x="370" y="238" width="30" height="44" fill="none" stroke="#2dd4bf" stroke-width="2" rx="2" stroke-dasharray="3,2"/>
+                    <text x="385" y="260" text-anchor="middle" fill="#2dd4bf" font-size="8" font-family="Arial" font-weight="700">VIGA</text>
+                    <text x="385" y="270" text-anchor="middle" fill="#2dd4bf" font-size="8" font-family="Arial" font-weight="700">INTERIOR</text>
+                </svg>
+
+                <p class="diagram-caption">
+                    Configuración de viga simplemente apoyada: <strong>apoyo fijo</strong> en el extremo izquierdo y <strong>apoyo móvil con rodillos</strong> en el extremo derecho (libera el desplazamiento horizontal y permite la rotación).
+                </p>
+            </div>
+
+            <!-- Datos del ejercicio -->
+            <h4 style="color: var(--white); margin-bottom: 1rem; font-size: 1rem;">📋 Datos del ejercicio</h4>
+            <div class="data-block">
+                <div class="data-item">
+                    <span class="data-label">Luz del puente</span>
+                    <span><span class="data-value">$L = 32.00$</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Ancho total</span>
+                    <span><span class="data-value">$11.40$</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Nº de vigas longitudinales</span>
+                    <span><span class="data-value">$5$</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Separación entre vigas</span>
+                    <span><span class="data-value">$A_{Trib} = 2.25$</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Espesor de la losa</span>
+                    <span><span class="data-value">$e_{losa} = 0.22$</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso unitario del concreto</span>
+                    <span><span class="data-value">$\gamma_c = 24.00$</span><span class="data-unit">kN/m³</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso propio de cada viga</span>
+                    <span><span class="data-value">$q_{viga} = 8.50$</span><span class="data-unit">kN/m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Barrera (2), cada una</span>
+                    <span><span class="data-value">$\gamma_{barrera} = 7.00$</span><span class="data-unit">kN/m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Nº de barreras</span>
+                    <span><span class="data-value">$2$</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso total del diafragma</span>
+                    <span><span class="data-value">$P_{diaf} = 180.00$</span><span class="data-unit">kN</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Espesor de carpeta asfáltica</span>
+                    <span><span class="data-value">$e_{asf} = 0.08$</span><span class="data-unit">m</span></span>
+                </div>
+                <div class="data-item">
+                    <span class="data-label">Peso unitario de la carpeta</span>
+                    <span><span class="data-value">$\gamma_{asf} = 22.50$</span><span class="data-unit">kN/m³</span></span>
+                </div>
+            </div>
+
+            <!-- PASO 1 -->
+            <div class="step-block" data-color="blue">
+                <div class="step-header">
+                    <div class="step-num">1</div>
+                    <h4 class="step-title">Carga de losa tributaria por viga interior</h4>
+                </div>
+                <div class="step-content">
+                    <p>El área tributaria de una viga interior corresponde a la separación entre vigas. La carga distribuida de la losa se obtiene como:</p>
+                    <div class="calc-line">
+                        $$ q_{losa} = A_{Trib} \cdot e_{losa} \cdot \gamma_c = 2.25 \cdot 0.22 \cdot 24.00 = 11.88 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 2 -->
+            <div class="step-block" data-color="teal">
+                <div class="step-header">
+                    <div class="step-num">2</div>
+                    <h4 class="step-title">Peso propio de la viga</h4>
+                </div>
+                <div class="step-content">
+                    <p>Dato proporcionado directamente:</p>
+                    <div class="calc-line">
+                        $$ q_{viga} = 8.50 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 3 -->
+            <div class="step-block" data-color="amber">
+                <div class="step-header">
+                    <div class="step-num">3</div>
+                    <h4 class="step-title">Aporte de las barreras por viga</h4>
+                </div>
+                <div class="step-content">
+                    <p>El peso total de las 2 barreras se distribuye entre las 5 vigas del puente:</p>
+                    <div class="calc-line">
+                        $$ q_{barrera} = \frac{\gamma_{barrera} \cdot N_{barreras}}{N_{vigas}} = \frac{7.00 \cdot 2}{5} = 2.80 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 4 -->
+            <div class="step-block" data-color="purple">
+                <div class="step-header">
+                    <div class="step-num">4</div>
+                    <h4 class="step-title">Aporte de los diafragmas por viga</h4>
+                </div>
+                <div class="step-content">
+                    <p>El peso total de los diafragmas se distribuye sobre la longitud total del puente y entre las vigas:</p>
+                    <div class="calc-line">
+                        $$ q_{diaf} = \frac{P_{diaf}}{L \cdot N_{vigas}} = \frac{180.00}{32.00 \cdot 5} = 1.125 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 5 -->
+            <div class="step-block" data-color="coral">
+                <div class="step-header">
+                    <div class="step-num">5</div>
+                    <h4 class="step-title">Carga muerta estructural (DC)</h4>
+                </div>
+                <div class="step-content">
+                    <p>Suma de todos los componentes estructurales:</p>
+                    <div class="calc-line">
+                        $$ DC = q_{losa} + q_{viga} + q_{barrera} + q_{diaf} = 11.88 + 8.50 + 2.80 + 1.125 = 24.305 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 6 -->
+            <div class="step-block" data-color="blue">
+                <div class="step-header">
+                    <div class="step-num">6</div>
+                    <h4 class="step-title">Carga de superficie de rodadura (DW)</h4>
+                </div>
+                <div class="step-content">
+                    <p>Carga de la carpeta asfáltica por viga interior:</p>
+                    <div class="calc-line">
+                        $$ DW = A_{Trib} \cdot e_{asf} \cdot \gamma_{asf} = 2.25 \cdot 0.08 \cdot 22.50 = 4.05 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 7 -->
+            <div class="step-block" data-color="teal">
+                <div class="step-header">
+                    <div class="step-num">7</div>
+                    <h4 class="step-title">Carga permanente total (qperm)</h4>
+                </div>
+                <div class="step-content">
+                    <div class="calc-line">
+                        $$ q_{perm} = DC + DW = 24.305 + 4.05 = 28.355 \text{ kN/m} $$
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 8 -->
+            <div class="step-block" data-color="amber">
+                <div class="step-header">
+                    <div class="step-num">8</div>
+                    <h4 class="step-title">Reacciones en los apoyos</h4>
+                </div>
+                <div class="step-content">
+                    <p>Para una viga simplemente apoyada con carga uniformemente distribuida:</p>
+                    <div class="calc-line">
+                        $$ R_{DC} = DC \cdot \frac{L}{2} = 24.305 \cdot 16 = 388.88 \text{ kN} $$
+                    </div>
+                    <div class="calc-line">
+                        $$ R_{DW} = DW \cdot \frac{L}{2} = 4.05 \cdot 16 = 64.80 \text{ kN} $$
+                    </div>
+                    <div class="result-line">
+                        Reacción total en cada apoyo: <span class="result-value">$R_T = R_{DC} + R_{DW} = 453.68 \text{ kN}$</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 9 -->
+            <div class="step-block" data-color="coral">
+                <div class="step-header">
+                    <div class="step-num">9</div>
+                    <h4 class="step-title">Momento positivo máximo en el centro de la luz</h4>
+                </div>
+                <div class="step-content">
+                    <p>Para una viga simplemente apoyada con carga uniforme: $M = \frac{qL^2}{8}$</p>
+                    <div class="calc-line">
+                        $$ M_{DC} = DC \cdot \frac{L^2}{8} = 24.305 \cdot \frac{32^2}{8} = 3111.04 \text{ kN·m} $$
+                    </div>
+                    <div class="calc-line">
+                        $$ M_{DW} = DW \cdot \frac{L^2}{8} = 4.05 \cdot \frac{32^2}{8} = 518.40 \text{ kN·m} $$
+                    </div>
+                    <div class="result-line">
+                        Momento total: <span class="result-value">$M_T = M_{DC} + M_{DW} = 3629.44 \text{ kN·m}$</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESUMEN FINAL -->
+            <h4 style="color: var(--white); margin: 2rem 0 0.8rem; font-size: 1.05rem;">📊 Cuadro Resumen de Resultados</h4>
+            <div class="summary-table-wrap">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Parámetro</th>
+                            <th style="text-align:right;">Valor</th>
+                            <th style="text-align:right;">Unidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-group"><td colspan="3">Cargas sobre una viga</td></tr>
+                        <tr>
+                            <td>Carga muerta estructural (DC)</td>
+                            <td class="val">24.305</td>
+                            <td class="unit">kN/m</td>
+                        </tr>
+                        <tr>
+                            <td>Carga de superficie de rodadura (DW)</td>
+                            <td class="val">4.05</td>
+                            <td class="unit">kN/m</td>
+                        </tr>
+                        <tr>
+                            <td>Carga permanente total ($q_{perm}$)</td>
+                            <td class="val">28.355</td>
+                            <td class="unit">kN/m</td>
+                        </tr>
+
+                        <tr class="row-group"><td colspan="3">Reacciones en los apoyos</td></tr>
+                        <tr>
+                            <td>Reacción por carga muerta estructural ($R_{DC}$)</td>
+                            <td class="val">388.88</td>
+                            <td class="unit">kN</td>
+                        </tr>
+                        <tr>
+                            <td>Reacción por superficie de rodadura ($R_{DW}$)</td>
+                            <td class="val">64.80</td>
+                            <td class="unit">kN</td>
+                        </tr>
+                        <tr>
+                            <td>Reacción total ($R_T$)</td>
+                            <td class="val">453.68</td>
+                            <td class="unit">kN</td>
+                        </tr>
+
+                        <tr class="row-group"><td colspan="3">Momentos en el centro de la luz</td></tr>
+                        <tr>
+                            <td>Momento por carga muerta estructural ($M_{DC}$)</td>
+                            <td class="val">3111.04</td>
+                            <td class="unit">kN·m</td>
+                        </tr>
+                        <tr>
+                            <td>Momento por superficie de rodadura ($M_{DW}$)</td>
+                            <td class="val">518.40</td>
+                            <td class="unit">kN·m</td>
+                        </tr>
+                        <tr>
+                            <td>Momento total ($M_T$)</td>
+                            <td class="val">3629.44</td>
+                            <td class="unit">kN·m</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ================= DIAGRAMA DE MOMENTO TOTAL ================= -->
+            <h4 style="color: var(--white); margin: 2rem 0 0.8rem; font-size: 1.05rem;">📈 Diagrama de Momento Total</h4>
+            <div class="bridge-diagram" style="margin-bottom: 0;">
+                <svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="beamGrad2" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#cbd5e1"/>
+                            <stop offset="100%" stop-color="#64748b"/>
+                        </linearGradient>
+                        <marker id="arrowDown2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                            <path d="M0,0 L6,3 L0,6 Z" fill="#fbbf24"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Título (texto plano) -->
+                    <text x="400" y="20" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Arial" font-weight="600" letter-spacing="2">DIAGRAMA DE MOMENTO TOTAL (DC + DW)</text>
+
+                    <!-- Viga -->
+                    <line x1="100" y1="100" x2="700" y2="100" stroke="url(#beamGrad2)" stroke-width="8" stroke-linecap="round"/>
+                    <line x1="100" y1="100" x2="700" y2="100" stroke="#0f1f38" stroke-width="8" opacity="0.2"/>
+
+                    <!-- ===== APOYO FIJO (IZQUIERDA) ===== -->
+                    <polygon points="100,102 90,118 110,118" fill="#f59e0b"/>
+                    <line x1="78" y1="118" x2="122" y2="118" stroke="#f59e0b" stroke-width="3"/>
+                    <g stroke="#f59e0b" stroke-width="1" opacity="0.45">
+                        <line x1="82" y1="118" x2="78" y2="123"/>
+                        <line x1="92" y1="118" x2="88" y2="123"/>
+                        <line x1="102" y1="118" x2="98" y2="123"/>
+                        <line x1="112" y1="118" x2="108" y2="123"/>
+                    </g>
+
+                    <!-- ===== APOYO MÓVIL CON RODILLOS (DERECHA) ===== -->
+                    <polygon points="700,102 690,114 710,114" fill="#f59e0b"/>
+                    <circle cx="694" cy="118" r="3.5" fill="#fbbf24" stroke="#0a1628" stroke-width="1"/>
+                    <circle cx="706" cy="118" r="3.5" fill="#fbbf24" stroke="#0a1628" stroke-width="1"/>
+                    <line x1="678" y1="123" x2="722" y2="123" stroke="#f59e0b" stroke-width="3"/>
+                    <g stroke="#f59e0b" stroke-width="1" opacity="0.45">
+                        <line x1="682" y1="123" x2="678" y2="128"/>
+                        <line x1="692" y1="123" x2="688" y2="128"/>
+                        <line x1="702" y1="123" x2="698" y2="128"/>
+                        <line x1="712" y1="123" x2="708" y2="128"/>
+                    </g>
+
+                    <!-- Carga uniforme -->
+                    <line x1="100" y1="60" x2="700" y2="60" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,3"/>
+                    <line x1="100" y1="60" x2="100" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="175" y1="60" x2="175" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="250" y1="60" x2="250" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="325" y1="60" x2="325" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="400" y1="60" x2="400" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="475" y1="60" x2="475" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="550" y1="60" x2="550" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="625" y1="60" x2="625" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+                    <line x1="700" y1="60" x2="700" y2="95" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrowDown2)"/>
+
+                    <!-- Notación MathJax: q perm -->
+                    <foreignObject x="280" y="35" width="240" height="30">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#fbbf24;font-weight:700;font-size:12px;line-height:1;">
+                            $q_{perm} = 28.355 \ \text{kN/m}$
+                        </div>
+                    </foreignObject>
+
+                    <!-- Reacciones R_T + etiquetas de apoyo -->
+                    <foreignObject x="18" y="132" width="164" height="46">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fbbf24;font-weight:700;font-size:11px;line-height:1.3;">
+                            <div>$R_T = 453.68 \ \text{kN}$</div>
+                            <div style="font-size:7.5px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;">APOYO FIJO</div>
+                        </div>
+                    </foreignObject>
+                    <foreignObject x="618" y="132" width="164" height="46">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fbbf24;font-weight:700;font-size:11px;line-height:1.3;">
+                            <div>$R_T = 453.68 \ \text{kN}$</div>
+                            <div style="font-size:7.5px;color:#94a3b8;font-weight:700;letter-spacing:0.1em;">APOYO MÓVIL</div>
+                        </div>
+                    </foreignObject>
+
+                    <!-- Línea de base del diagrama de momento -->
+                    <line x1="100" y1="240" x2="700" y2="240" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
+                    <text x="80" y="244" text-anchor="end" fill="#94a3b8" font-size="10" font-family="Arial">0</text>
+                    <text x="720" y="244" text-anchor="start" fill="#94a3b8" font-size="10" font-family="Arial">0</text>
+
+                    <!-- Área bajo la curva -->
+                    <path d="M 100 240 Q 400 380 700 240 L 700 240 L 100 240 Z" fill="rgba(45,212,191,0.15)"/>
+
+                    <!-- Curva de momento (parábola) -->
+                    <path d="M 100 240 Q 400 380 700 240" fill="none" stroke="#2dd4bf" stroke-width="3"/>
+
+                    <!-- Línea vertical en el centro -->
+                    <line x1="400" y1="240" x2="400" y2="310" stroke="#2dd4bf" stroke-width="1.5" stroke-dasharray="3,2"/>
+                    <circle cx="400" cy="310" r="4" fill="#2dd4bf"/>
+
+                    <!-- Notación MathJax: M_T -->
+                    <foreignObject x="410" y="292" width="260" height="30">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:flex-start;color:#2dd4bf;font-weight:700;font-size:12px;line-height:1;">
+                            $M_T = 3629.44 \ \text{kN·m}$
+                        </div>
+                    </foreignObject>
+
+                    <!-- Indicación de luz con MathJax -->
+                    <line x1="100" y1="196" x2="700" y2="196" stroke="#2dd4bf" stroke-width="1"/>
+                    <line x1="100" y1="191" x2="100" y2="201" stroke="#2dd4bf" stroke-width="1"/>
+                    <line x1="700" y1="191" x2="700" y2="201" stroke="#2dd4bf" stroke-width="1"/>
+                    <foreignObject x="310" y="196" width="180" height="28">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#2dd4bf;font-weight:700;font-size:12px;line-height:1;">
+                            $L = 32.00 \ \text{m}$
+                        </div>
+                    </foreignObject>
+
+                    <!-- Nota de diagrama (texto plano) -->
+                    <text x="400" y="400" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Arial">Momento positivo (sagging) — Curva parabólica</text>
+                </svg>
+            </div>
+            <p style="font-size:0.8rem; color:#94a3b8; margin-top:0.5rem; text-align:center;">Diagrama de momento flector total (DC + DW) para la viga simplemente apoyada. Momento máximo en el centro de la luz: $M_T = 3629.44 \text{ kN·m}$.</p>
+            <!-- ================= FIN DIAGRAMA ================= -->
+
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="brand">
+            <span>📘 Manual de Puentes 2018 · MTC Perú</span>
+        </div>
+        <p>Fuente oficial: <strong>Ministerio de Transportes y Comunicaciones del Perú</strong></p>
+        <p style="margin-top: 0.4rem;">Clasificación de cargas según AASHTO LRFD, adoptada por el Manual de Puentes MTC 2018. Para detalles completos, consulte el manual original.</p>
+    </footer>
+
+</div>
+
+<!-- ============ PARTÍCULAS ANIMADAS DE FONDO ============ -->
+<script>
+(function () {
+    var layer = document.getElementById('particles');
+    if (!layer) return;
+
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+
+    var palette = [
+        '45,212,191',   // teal
+        '167,139,250',  // purple
+        '251,191,36',   // amber
+        '96,165,250',   // blue
+        '94,234,212'    // teal claro
+    ];
+
+    var count = window.innerWidth < 700 ? 22 : 48;
+    var frag = document.createDocumentFragment();
+
+    for (var i = 0; i < count; i++) {
+        var p = document.createElement('span');
+        p.className = 'particle';
+
+        var size = 1.5 + Math.random() * 3.5;
+        var color = palette[Math.floor(Math.random() * palette.length)];
+        var peak = 0.22 + Math.random() * 0.5;
+
+        p.style.width = size.toFixed(1) + 'px';
+        p.style.height = size.toFixed(1) + 'px';
+        p.style.left = (Math.random() * 100).toFixed(2) + '%';
+        p.style.background = 'rgba(' + color + ',' + peak.toFixed(2) + ')';
+        p.style.boxShadow = '0 0 ' + (6 + size * 2.5).toFixed(1) + 'px rgba(' + color + ',' + (peak * 0.9).toFixed(2) + ')';
+        p.style.setProperty('--peak', peak.toFixed(2));
+        p.style.setProperty('--drift', (Math.random() * 140 - 70).toFixed(0) + 'px');
+        p.style.animationDuration = (16 + Math.random() * 24).toFixed(1) + 's';
+        p.style.animationDelay = (-Math.random() * 35).toFixed(1) + 's';
+
+        frag.appendChild(p);
+    }
+
+    layer.appendChild(frag);
+})();
+</script>
+
+</body>
+</html>
